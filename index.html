@@ -5,14 +5,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cookie Notes Project2</title>
     <link rel="stylesheet" href="./style.css">
-</head>
+ <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.13.1/font/bootstrap-icons.min.css">
+
 <body>
-    <div class="main-flex">
+    
+    <section class="main-flex">
         <section class="left-section">
             <section class="head-section-left">
                 <div class="main-head">
-                    <h3>icon Cookie Notes</h3>
+                    <h3><i class="bi bi-journal-text" style="color: rgb(62, 115, 212);"></i> Cookie Notes</h3>
                     <button class="add-notes" id="add-notes-btn">+</button>
+                </div>
+                <div class="serch-bar">
+                    <i class="bi bi-search Smaller heading" style="font:solid; font-size:12px; color: grey;"  ></i>
+                    <input type="text" placeholder="Serach title & content.." id="input-text">
+                </div>
+                <div class="toggle">
+                    <button class="btn-toggles" id="btn-notes">My Notes</button>
+                    <button  class="btn-toggles"  id="btn-trash">Trash</button>
                 </div>
             </section>
 
@@ -23,11 +33,27 @@
         </section>
 
         <section class="right-section">
-            <section class="head-section-right"></section>
-            <section class="notes-write-pannel"></section>
-            <section class="words-view"></section>
+            <section class="head-section-right"><i class="bi bi-trash3" style="color: grey;"></i><i class="bi bi-bookmark" style="color: grey;"></i></section>
+
+            <section class="notes-write-pannel">
+                <div class="placeholder">
+                    <icon></icon>Select a note to view or create a new one
+                </div>
+            </section>
+           
+            <section class="words-view"> </section>            
         </section>
+
+  <!-- main scetion close -->
+    </section>
+<!-- notes cards -->
+    <div class="not-cards">
+        <div class="content">
+            <h2></h2><div class="note-content"></div>
+        </div>
     </div>
+
     <script src="./script.js"></script>
+    
 </body>
 </html>
