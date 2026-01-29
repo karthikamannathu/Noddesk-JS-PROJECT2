@@ -1,9 +1,15 @@
+*{
+    margin: 0%;
+    padding: 0%;
+}
+
+
 .main-flex{
     display: flex;
     flex-direction: row;
 }
 .left-section{
     width: 250px;
-    height: 1000vh;
+    height: 200vh;
     border: solid 1px black;
 }
