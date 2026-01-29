@@ -7,9 +7,44 @@
 .main-flex{
     display: flex;
     flex-direction: row;
+    margin: 10px;
+    
 }
 .left-section{
     width: 250px;
     height: 200vh;
     border: solid 1px black;
+    padding: 10px;
+    display: flex;
+    flex-direction: column;
+}
+
+.main-head{
+    display: flex;
+    justify-content:space-between ;  
+    align-items: center;
+}
+
+.add-notes-btn{
+    background:blue;
+    width: 2pc;
+    height: 2pc;
+    border: none;
+    border-radius: 6px;
+    color: white;
+    font-size: larger;
+    font-weight: 400;
+}
+
+.serch-bar{
+ margin: 10px 0px;
+background-color:rgba(251, 249, 249, 0.901);
+height: 2pc;
+align-content:center;
+
+}
+
+#input-text{
+    border: none;
+    background-color:rgba(251, 249, 249, 0.901);
 }
