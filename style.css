@@ -2,7 +2,11 @@
     margin: 0%;
     padding: 0%;
 }
-
+input{
+    border: none;
+}input:hover{
+    border: 0cap;
+}
 
 .main-flex{
     display: flex;
@@ -73,3 +77,8 @@ border-color: rgb(118, 164, 243);
     background-color: white;
 }
 
+
+.note-cards{
+    display: none;
+    width: auto;
+}
