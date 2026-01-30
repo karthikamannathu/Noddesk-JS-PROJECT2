@@ -11,7 +11,7 @@
     
 }
 .left-section{
-    width: 250px;
+    width: 330px;
     height: 200vh;
     border: solid 1px black;
     padding: 10px;
@@ -47,4 +47,29 @@ align-content:center;
 #input-text{
     border: none;
     background-color:rgba(251, 249, 249, 0.901);
+}#input-text:focus{
+border-color: rgb(118, 164, 243);
 }
+
+
+.toggle{
+    background-color:rgba(220, 218, 218, 0.838);
+    width: auto;
+    height: 1.5rem;
+    display: flex;
+    padding: 1px;
+    align-items: center;
+    border-radius: 5px;
+    justify-content: center;
+}
+
+.btn-toggles{
+    width: 150px;
+    height: 20px;
+    border: none;
+    border-radius: 5px;
+    background-color:rgba(220, 218, 218, 0.838);
+}.btn-toggles:hover{
+    background-color: white;
+}
+
