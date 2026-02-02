@@ -53,12 +53,14 @@ noteContent.addEventListener('input', (event) => {
 btnTrash.addEventListener('click',() =>{
   btnNotes.classList.remove('active');
   btnTrash.classList.add('active') ;
+  btnTrash.style.color = 'red'
      listCards.style.display = 'none';
 })
 
 btnNotes.addEventListener('click',()=>{
      btnTrash.classList.remove('active');
   btnNotes.classList.add('active') ;
+   listCards.style.display = 'block';
  
 
 })
