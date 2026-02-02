@@ -72,14 +72,18 @@ align-content:center;
     border: none;
     border-radius: 5px;
     background-color:rgba(220, 218, 218, 0.838);
-}.btn-toggles:hover{
-    background-color: white;
+    cursor: pointer;
 }
 
+.active{
+background-color: white;
+};
+.in-active{
+ background-color:rgba(220, 218, 218, 0.838);   
+}
 
 .note-cards{
-    
-    width: auto;
+width: auto;
 }
 
 /* right side */
