@@ -9,6 +9,7 @@ const noteWrite = document.querySelector('.write-note');
 
 
 
+
 btnNotes.classList.add('active')
 btnTrash.classList.add('in-active')
 
@@ -16,9 +17,9 @@ btnTrash.classList.add('in-active')
    
 // }
 
- addNotes.addEventListener('click',addNotesfun)
+ addNotes.addEventListener('click',addNotesfun())
 
-  function addNotesfun(){
+   function addNotesfun(){
 noNotesList.style.display = 'none';
 noNotes.style.display = 'none';
 rightWriteNote.style.display = 'block';
@@ -30,10 +31,10 @@ noteWrite.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Titl
 
  let cards = document.createElement('div');
  cards.className = 'note-cards';
-cards.innerHTML = `<h3 class="note-card-title">Untiled Note</h3>
-                    <p class ="note-card-content">No content</p>`;
-let currentCard = listCards.appendChild(cards)
-                     
+cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
+                    <p class = "note-card-content">No content</p>`;
+let currentCard = listCards.appendChild(cards);
+noteCards = document.querySelectorAll('.note-cards');                    
 const noteTitle = noteWrite.querySelector('#note-write-tittle');
 const noteContent = noteWrite.querySelector('#note-write-content');
 
@@ -50,19 +51,24 @@ noteContent.addEventListener('input', (event) => {
 });
 };
 
-btnTrash.addEventListener('click',() =>{
+btnTrash.addEventListener('click',(e) =>{
   btnNotes.classList.remove('active');
   btnTrash.classList.add('active') ;
-  btnTrash.style.color = 'red'
-     listCards.style.display = 'none';
+  btnTrash.style.color = 'red';
+ 
+  
+ let trashCards = document.createElement('div');
+ trashCards.className = 'trash-cards';
+trashCards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
+                    <p class = "note-card-content">No content</p>`;
+// listCards.appendChild(cards);
+
 })
 
-btnNotes.addEventListener('click',()=>{
+btnNotes.addEventListener('click',function btnNotesTrue(){
      btnTrash.classList.remove('active');
   btnNotes.classList.add('active') ;
    listCards.style.display = 'block';
- 
-
 })
 
-// 
+// toggle btn fun not propper /tash btn active write page shows placehloder div select any trash items card that card text only show .
