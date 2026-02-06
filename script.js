@@ -20,19 +20,20 @@ btnTrash.classList.add('in-active')
  addNotes.addEventListener('click',addNotesfun())
 
    function addNotesfun(){
+   try {
 noNotesList.style.display = 'none';
 noNotes.style.display = 'none';
 rightWriteNote.style.display = 'block';
 // const totalClicks = performance.eventCounts.get('click');
 
 noteWrite.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
-                        <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
+                       <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
 // note left cards creation
 
- let cards = document.createElement('div');
- cards.className = 'note-cards';
+let cards = document.createElement('div');
+cards.className = 'note-cards';
 cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
-                    <p class = "note-card-content">No content</p>`;
+                   <p class = "note-card-content">No content</p>`;
 let currentCard = listCards.appendChild(cards);
 noteCards = document.querySelectorAll('.note-cards');                    
 const noteTitle = noteWrite.querySelector('#note-write-tittle');
@@ -40,15 +41,20 @@ const noteContent = noteWrite.querySelector('#note-write-content');
 
 
 noteTitle.addEventListener('input', (event) => {
-    // cards Title textContent edit
+   // cards Title textContent edit
 currentCard.querySelector('.note-card-title').textContent = event.target.value;
 });
 
 
 noteContent.addEventListener('input', (event) => {
-     // cards Content textContent edit
-    currentCard.querySelector(".note-card-content").textContent = event.target.value;
+    // cards Content textContent edit
+   currentCard.querySelector(".note-card-content").textContent = event.target.value;
 });
+   } catch (error) {
+    console.log(error)
+   }
+    
+
 };
 
 btnTrash.addEventListener('click',(e) =>{
