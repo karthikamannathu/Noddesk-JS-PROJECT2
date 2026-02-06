@@ -30,6 +30,8 @@ noteWrite.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Titl
                        <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
 // note left cards creation
 
+// jhiukjujikjhgg
+
 let cards = document.createElement('div');
 cards.className = 'note-cards';
 cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
