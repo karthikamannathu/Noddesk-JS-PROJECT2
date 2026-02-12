@@ -119,4 +119,12 @@ font-weight: bolder;
    margin: 10px;
    border: solid 1px rgb(134, 40, 40);
    cursor: pointer;
+   height: 60px;
+}
+
+.note-card-title{
+pointer-events: none;
+}
+.note-card-content{
+pointer-events: none;
 }

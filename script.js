@@ -6,15 +6,30 @@ const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
 const noteWritePannel = document.querySelector('.write-note');
+ 
+
+  toggle_my_note();
 
 
 
-  toggle_my_note()
-function toggle_my_note(){
+async function toggle_my_note(){
 btnNotes.classList.add('active');//toogle myNote buttun active
 btnTrash.classList.add('in-active')
 
-addNotesBtn.addEventListener('click' ,addNotes);
+await addNotesBtn.addEventListener('click' ,addNotes);
+
+try {
+  
+//  console.log(listCards.forEach(item => {console.log(item)}))
+   // carditems.forEach(item => {
+   //  item.addEventListener('click', () => {
+   //    console.log(item);
+   // })})
+   // console.log(carditems)
+} catch (error) {
+   console.log(error)
+}
+
 };
 
 
@@ -25,7 +40,9 @@ try {
    rightWriteNote.style.display = 'block';
    noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
-   create_note_Cards()
+   create_note_Cards();
+  
+
    }
    
  catch (error) {
@@ -44,7 +61,7 @@ cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
                    <p class = "note-card-content">No content</p>`;
  let currentCard = await listCards.appendChild(cards);
   cards_text_content_pass(currentCard);
- return currentCard;
+ return listCards;
 }
 
 
@@ -52,6 +69,7 @@ cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
 function cards_text_content_pass(currentCard){
 const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
 const noteContent = noteWritePannel.querySelector('#note-write-content');
+
 noteTitle.addEventListener('input', (event) => {
    // cards Title textContent edit
 currentCard.querySelector('.note-card-title').textContent = event.target.value;
@@ -62,12 +80,18 @@ noteContent.addEventListener('input', (event) => {
     // cards Content textContent edit
    currentCard.querySelector(".note-card-content").textContent = event.target.value;
 });
+
+currentCard.addEventListener('click',selectCards)
+
 }
 
 
 
 
-
+function selectCards(e){
+ 
+e.target.style.background ='red';
+}
 
 
 
