@@ -6,8 +6,7 @@ const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
 const noteWritePannel = document.querySelector('.write-note');
-const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
-const noteContent = noteWritePannel.querySelector('#note-write-content');
+
 
 
   toggle_my_note()
@@ -19,17 +18,22 @@ addNotesBtn.addEventListener('click' ,addNotes);
 };
 
 
-
-
-
 function addNotes(){
-noNotesList.style.display = 'none';//no-list-placeholder-div disable
-noNotes.style.display = 'none';
-rightWriteNote.style.display = 'block';
-noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
-                        <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
-create_note_Cards()
+try {
+   noNotesList.style.display = 'none';//no-list-placeholder-div disable
+   noNotes.style.display = 'none';
+   rightWriteNote.style.display = 'block';
+   noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
+                           <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
+   create_note_Cards()
+   }
+   
+ catch (error) {
+   console.log(error)
+ }
 };
+
+
 
 
 async function create_note_Cards(){
@@ -39,12 +43,26 @@ cards.className = 'note-cards';
 cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
                    <p class = "note-card-content">No content</p>`;
  let currentCard = await listCards.appendChild(cards);
+  cards_text_content_pass(currentCard);
  return currentCard;
 }
 
 
 
+function cards_text_content_pass(currentCard){
+const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
+const noteContent = noteWritePannel.querySelector('#note-write-content');
+noteTitle.addEventListener('input', (event) => {
+   // cards Title textContent edit
+currentCard.querySelector('.note-card-title').textContent = event.target.value;
+});
 
+
+noteContent.addEventListener('input', (event) => {
+    // cards Content textContent edit
+   currentCard.querySelector(".note-card-content").textContent = event.target.value;
+});
+}
 
 
 
