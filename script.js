@@ -6,7 +6,8 @@ const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
 const noteWritePannel = document.querySelector('.write-note');
-
+const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
+const noteContent = noteWritePannel.querySelector('#note-write-content');
 
 
   toggle_my_note()
@@ -31,8 +32,14 @@ create_note_Cards()
 };
 
 
-function create_note_Cards(){
+async function create_note_Cards(){
+let cards = document.createElement('div');
+cards.className = 'note-cards';
 
+cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
+                   <p class = "note-card-content">No content</p>`;
+ let currentCard = await listCards.appendChild(cards);
+ return currentCard;
 }
 
 
