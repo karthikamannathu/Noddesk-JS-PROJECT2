@@ -6,7 +6,7 @@ const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
 const noteWritePannel = document.querySelector('.write-note');
- 
+let activeCard = null;
 
   toggle_my_note();
 
@@ -72,12 +72,15 @@ const noteContent = noteWritePannel.querySelector('#note-write-content');
 
 noteTitle.addEventListener('input', (event) => {
    // cards Title textContent edit
+     if (!currentCard) return;
+
 currentCard.querySelector('.note-card-title').textContent = event.target.value;
 });
 
 
 noteContent.addEventListener('input', (event) => {
     // cards Content textContent edit
+      if (!currentCard) return;
    currentCard.querySelector(".note-card-content").textContent = event.target.value;
 });
 
@@ -89,8 +92,30 @@ currentCard.addEventListener('click',selectCards)
 
 
 function selectCards(e){
+ let card = e.currentTarget
+ activeCard = card//current selected card
  
-e.target.style.background ='red';
+
+
+// const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
+// const noteContent = noteWritePannel.querySelector('#note-write-content');
+//   console.log(noteTitle.getAttribute('placeholder')) 
+//  if (noteTitle.value == '')return;
+//     noteTitle.value = card.querySelector('.note-card-title').innerText ;
+//   noteContent.value = card.querySelector('.note-card-content').innerText ;
+   // console.log(noteTitle.value,"else")
+
+// noteTitle.addEventListener('input', (event) => {
+//    // cards Title textContent edit
+// e.target.querySelector('.note-card-title').textContent = event.target.value;
+
+// });
+
+// noteContent.addEventListener('input', (event) => {
+//     // cards Content textContent edit
+//    // cards Title textContent edit
+// e.target.querySelector(".note-card-content").textContent = event.target.value;
+// });
 }
 
 
