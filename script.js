@@ -6,9 +6,9 @@ const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
 const noteWrite = document.querySelector('.write-note');
-let noteCards = document.querySelectorAll('.note-cards')
+let noteCards = listCards.querySelectorAll('.note-cards');  
 
-
+let currentCard = ''
 
 
 
@@ -16,7 +16,7 @@ let noteCards = document.querySelectorAll('.note-cards')
       btnTrash.classList.add('in-active')
 
  addNotes.addEventListener('click',addNotesfun)
-
+ btnNotesTrue()
    function addNotesfun(){
    try {
      
@@ -30,17 +30,18 @@ noteWrite.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Titl
                        <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
 // note left cards creation
 
-// jhiukjujikjhgg
+
 
 let cards = document.createElement('div');
 cards.className = 'note-cards';
 
 cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
                    <p class = "note-card-content">No content</p>`;
-let currentCard = listCards.appendChild(cards);
-noteCards = document.querySelectorAll('.note-cards');                    
+ let currentCard = listCards.appendChild(cards);
+                 
 const noteTitle = noteWrite.querySelector('#note-write-tittle');
 const noteContent = noteWrite.querySelector('#note-write-content');
+ 
 
 noteTitle.addEventListener('input', (event) => {
    // cards Title textContent edit
@@ -55,9 +56,9 @@ noteContent.addEventListener('input', (event) => {
    } catch (error) {
     console.log(error)
    }
-    
-
 };
+
+ 
 
 btnTrash.addEventListener('click',(e) =>{
   btnNotes.classList.remove('active');
@@ -72,10 +73,14 @@ trashCards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
 
 })
 
-btnNotes.addEventListener('click',function btnNotesTrue(){
+btnNotes.addEventListener('click',btnNotesTrue)
+
+
+
+function btnNotesTrue(){
      btnTrash.classList.remove('active');
   btnNotes.classList.add('active') ;
    listCards.style.display = 'block';
-})
+    
+   }
 
-//
