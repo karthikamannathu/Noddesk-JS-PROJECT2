@@ -5,7 +5,7 @@ const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
 const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
-const noteWrite = document.querySelector('.write-note');
+const noteWritePannel = document.querySelector('.write-note');
 
 
 
@@ -25,7 +25,8 @@ function addNotes(){
 noNotesList.style.display = 'none';//no-list-placeholder-div disable
 noNotes.style.display = 'none';
 rightWriteNote.style.display = 'block';
-
+noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
+                        <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
 create_note_Cards()
 };
 
