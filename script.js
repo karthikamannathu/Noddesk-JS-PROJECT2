@@ -7,11 +7,13 @@ const listCards = document.querySelector('.list-notes-cards')
 let noteWritePannel = document.querySelector('.notes-write-pannel');
 
 let clickCount =0;
-  toggle_my_note();
+ ;
 
-
+btnNotes.addEventListener('click',toggle_my_note)
 async function toggle_my_note(){
+   btnNotes.classList.remove()
 btnNotes.classList.add('active');//toogle myNote buttun active
+btnTrash.classList.remove()
 btnTrash.classList.add('in-active')
 
 await addNotesBtn.addEventListener('click' ,addNote);
@@ -94,14 +96,24 @@ function inputPassCard(noteWritePannel){
 )}
 
 
-// write the update input then the change is showing select card
+
+
+
+// Trash function start
+
+btnTrash.addEventListener("click",tashNote)
+
+function tashNote(){
+   btnNotes.classList.remove()
+  btnNotes.classList.add('in-active');//toogle Trash buttun active
+  btnTrash.classList.remove()
+btnTrash.classList.add('active') 
+}
 
 
 
 
-
-
-
+ 
 
 
 
