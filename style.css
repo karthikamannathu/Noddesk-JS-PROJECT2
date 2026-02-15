@@ -92,8 +92,8 @@ width: auto;
 
 /* right side */
 
-.write-note{
-display: none;
+.notes-write-pannel{
+
 padding:30px;
 width: 550px;
 height: 200px;

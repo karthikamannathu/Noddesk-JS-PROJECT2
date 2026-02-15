@@ -3,20 +3,19 @@ const btnNotes = document.querySelector('#btn-notes');
 const btnTrash = document.querySelector('#btn-trash');
 const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
-const rightWriteNote = document.querySelector('.write-note');
 const listCards = document.querySelector('.list-notes-cards')
-const noteWritePannel = document.querySelector('.write-note');
-let activeCard = null;
-
+let noteWritePannel = document.querySelector('.notes-write-pannel');
+let cardText= null;
+let inputWorked = false;
+let clickCount =0;
   toggle_my_note();
-
 
 
 async function toggle_my_note(){
 btnNotes.classList.add('active');//toogle myNote buttun active
 btnTrash.classList.add('in-active')
 
-await addNotesBtn.addEventListener('click' ,addNotes);
+await addNotesBtn.addEventListener('click' ,addNote);
 
 try {
   
@@ -33,16 +32,14 @@ try {
 };
 
 
-function addNotes(){
+function addNote(){
 try {
    noNotesList.style.display = 'none';//no-list-placeholder-div disable
-   noNotes.style.display = 'none';
-   rightWriteNote.style.display = 'block';
-   noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
-                           <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
    create_note_Cards();
-  
 
+   noNotes.style.display = 'none';
+   create_note_write_pannel()
+   
    }
    
  catch (error) {
@@ -51,52 +48,42 @@ try {
 };
 
 
-
+function create_note_write_pannel(){
+noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
+                           <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
+                           inputPassCard(noteWritePannel)                 
+}
 
 async function create_note_Cards(){
-let cards = document.createElement('div');
-cards.className = 'note-cards';
-
-cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
+   clickCount++;
+let card = document.createElement('div');
+card.className = 'note-cards';
+card.id =`card${clickCount}`;
+card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
                    <p class = "note-card-content">No content</p>`;
- let currentCard = await listCards.appendChild(cards);
-  cards_text_content_pass(currentCard);
- return listCards;
-}
-
-
-
-function cards_text_content_pass(currentCard){
-const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
-const noteContent = noteWritePannel.querySelector('#note-write-content');
-
-noteTitle.addEventListener('input', (event) => {
-   // cards Title textContent edit
-     if (!currentCard) return;
-
-currentCard.querySelector('.note-card-title').textContent = event.target.value;
-});
-
-
-noteContent.addEventListener('input', (event) => {
-    // cards Content textContent edit
-      if (!currentCard) return;
-   currentCard.querySelector(".note-card-content").textContent = event.target.value;
-});
-
-currentCard.addEventListener('click',selectCards)
+ await listCards.appendChild(card);
+ setActiveCard(card);
 
 }
 
 
 
 
-function selectCards(e){
- let card = e.currentTarget
- activeCard = card//current selected card
+
+
+
+
  
 
+//    noteTitle.value = cardText.innerText ;
+//   noteContent.value = cardText.innerText ;
 
+
+// }
+// else{
+//      noteTitle.value = activeCard.querySelector('.note-card-title').innerText ;
+//   noteContent.value = activeCard.querySelector('.note-card-content').innerText ;
+// }
 // const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
 // const noteContent = noteWritePannel.querySelector('#note-write-content');
 //   console.log(noteTitle.getAttribute('placeholder')) 
