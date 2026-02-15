@@ -66,6 +66,13 @@ card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
 
 }
 
+function inputPassCard(noteWritePannel){
+  let inputTitle = noteWritePannel.querySelector('#note-write-tittle')
+  inputTitle.addEventListener('input',(e) =>
+  currentCard.querySelector('.note-card-title').textContent = e.target.value.trim()
+)
+}
+
 
 function setActiveCard(card){
    currentCard = card
