@@ -67,6 +67,16 @@ card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
 }
 
 
+function setActiveCard(card){
+   currentCard = card
+card.addEventListener('click', e => {
+  const input = noteWritePannel.querySelector('#note-write-tittle');
+  const title = e.currentTarget.querySelector('.note-card-title').textContent;
+  input.value = title === 'Untitled Note' ? '' : title;
+});
+
+
+}
 
 
 
@@ -103,7 +113,7 @@ card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
 //    // cards Title textContent edit
 // e.target.querySelector(".note-card-content").textContent = event.target.value;
 // });
-}
+
 
 
 
