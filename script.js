@@ -5,8 +5,7 @@ const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
 const listCards = document.querySelector('.list-notes-cards')
 let noteWritePannel = document.querySelector('.notes-write-pannel');
-let cardText= null;
-let inputWorked = false;
+
 let clickCount =0;
   toggle_my_note();
 
@@ -34,12 +33,8 @@ try {
 
 function addNote(){
 try {
-   noNotesList.style.display = 'none';//no-list-placeholder-div disable
    create_note_Cards();
-
-   noNotes.style.display = 'none';
-   create_note_write_pannel()
-   
+   create_note_write_pannel();
    }
    
  catch (error) {
@@ -47,85 +42,59 @@ try {
  }
 };
 
-
+// inputs pannel create
 function create_note_write_pannel(){
+    noNotes.style.display = 'none';
+
 noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
-                           inputPassCard(noteWritePannel)                 
+                             inputPassCard(noteWritePannel)//pannel input pass cards                
 }
 
-async function create_note_Cards(){
+// create new note card
+function create_note_Cards(){
+   noNotesList.style.display = 'none';//no-list-placeholder-div disable
    clickCount++;
 let card = document.createElement('div');
 card.className = 'note-cards';
 card.id =`card${clickCount}`;
 card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
                    <p class = "note-card-content">No content</p>`;
- await listCards.appendChild(card);
- setActiveCard(card);
+ listCards.appendChild(card);
+ currentCard = card;
+ setActiveCard();
+
 
 }
+
+// writing inputs  at a time pass to the card
+
+
+// card Selection 
+function setActiveCard(){
+ 
+currentCard.addEventListener('click', e => {
+   currentCard = e.target
+   console.log(currentCard,"current card in  selected") 
+  const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
+  const title = e.currentTarget.querySelector('.note-card-title').textContent;
+  inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
+
+});
+}
+
 
 function inputPassCard(noteWritePannel){
+    
   let inputTitle = noteWritePannel.querySelector('#note-write-tittle')
-  inputTitle.addEventListener('input',(e) =>
-  currentCard.querySelector('.note-card-title').textContent = e.target.value.trim()
-)
-}
+  inputTitle.addEventListener('input',(e) =>{
+   console.log(currentCard,"current card in  tittle input pass") 
+  currentCard.querySelector('.note-card-title').textContent = e.target.value.trim();//tilte input pass to card title
+  }
+)}
 
 
-function setActiveCard(card){
-   currentCard = card
-card.addEventListener('click', e => {
-  const input = noteWritePannel.querySelector('#note-write-tittle');
-  const title = e.currentTarget.querySelector('.note-card-title').textContent;
-  input.value = title === 'Untitled Note' ? '' : title;
-});
-
-
-}
-
-
-
-
-
-
- 
-
-//    noteTitle.value = cardText.innerText ;
-//   noteContent.value = cardText.innerText ;
-
-
-// }
-// else{
-//      noteTitle.value = activeCard.querySelector('.note-card-title').innerText ;
-//   noteContent.value = activeCard.querySelector('.note-card-content').innerText ;
-// }
-// const noteTitle = noteWritePannel.querySelector('#note-write-tittle');
-// const noteContent = noteWritePannel.querySelector('#note-write-content');
-//   console.log(noteTitle.getAttribute('placeholder')) 
-//  if (noteTitle.value == '')return;
-//     noteTitle.value = card.querySelector('.note-card-title').innerText ;
-//   noteContent.value = card.querySelector('.note-card-content').innerText ;
-   // console.log(noteTitle.value,"else")
-
-// noteTitle.addEventListener('input', (event) => {
-//    // cards Title textContent edit
-// e.target.querySelector('.note-card-title').textContent = event.target.value;
-
-// });
-
-// noteContent.addEventListener('input', (event) => {
-//     // cards Content textContent edit
-//    // cards Title textContent edit
-// e.target.querySelector(".note-card-content").textContent = event.target.value;
-// });
-
-
-
-
-
-
+// write the update input then the change is showing select card
 
 
 
