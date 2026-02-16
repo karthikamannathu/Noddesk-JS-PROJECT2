@@ -155,4 +155,10 @@ font-size: x-large;
     justify-content: space-between;
 }
 
+.icon{
+    display: flex;
+    justify-content: space-around;
+    width: 60px;
+}
+
 

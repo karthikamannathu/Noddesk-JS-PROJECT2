@@ -5,8 +5,11 @@ const btnNotes = document.querySelector('#btn-notes');
 const btnTrash = document.querySelector('#btn-trash');
 const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
-const noteCardsLists = document.querySelector('#note-cards-list')
+const cardList =document.querySelector('.list_cards')
+const noteCardsLists = document.querySelector('#note-cards-list');
 let noteWritePannel = document.querySelector('.notes-write-pannel');
+let trashBtn = document.querySelector('.bi-trash3');
+let headSectionRight = document.querySelector('.head_section_right');
 
 let currentTime = null;
 let currentCard = null;
@@ -18,11 +21,12 @@ let dateData = dateTimeSave.toLocaleDateString('en-US',{
  });
 let clickCount = 0;
 
-
 toggle_my_note()
 
-
 btnNotes.addEventListener('click',toggle_my_note)
+
+
+
 
 async function toggle_my_note(){
 btnNotes.classList.remove('in-active')
@@ -30,21 +34,10 @@ btnNotes.classList.add('active');//toogle myNote buttun active
 btnTrash.classList.remove('active')
 btnTrash.classList.add('in-active')
 noteCardsLists.style.display = 'block';
+headSectionRight.style.display = 'flex';
 localStorage.clear();
-
+headSectionRight.addEventListener('click',add_trash())
 await addNotesBtn.addEventListener('click' ,addNote);
-
-try {
-  
-//  console.log(noteCardsLists.forEach(item => {console.log(item)}))
-   // carditems.forEach(item => {
-   //  item.addEventListener('click', () => {
-   //    console.log(item);
-   // })})
-   // console.log(carditems)
-} catch (error) {
-   console.log(error)
-}
 
 };
 
@@ -124,7 +117,7 @@ currentCard.addEventListener('click', e => {
   const title = e.currentTarget.querySelector('.note_card_title').textContent;
   inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
  
-  let timeGet = JSON.parse(localStorage.getItem(`${currentCard.id}`))
+  let timeGet = JSON.parse(localStorage.getItem(`${currentCard.id}time`))
 //   console.log(currentCard.id,"timeGet")
   timeDiv.innerHTML = timeGet;
 
@@ -148,9 +141,13 @@ function tashNote(){
   btnNotes.classList.add('in-active');//toogle Trash buttun active
   btnTrash.classList.remove('in-active')
   btnTrash.classList.add('active') 
-noteCardsLists.style.display = 'none'
+noteCardsLists.style.display = 'none';
+ 
+
+
+headSectionRight.style.display = 'none';
 //  noNotes.style.display = 'flex';
- add_trash_notes()
+//  add_trash_notes()
 }
 
 function saveTIme() {
@@ -168,7 +165,7 @@ function saveTIme() {
 
 
 
-function add_trash_notes(){
+function add_trash(){
 
 }
  
