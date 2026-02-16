@@ -29,7 +29,8 @@ btnNotes.classList.remove('in-active')
 btnNotes.classList.add('active');//toogle myNote buttun active
 btnTrash.classList.remove('active')
 btnTrash.classList.add('in-active')
-noteCardsLists.style.display = 'block'
+noteCardsLists.style.display = 'block';
+localStorage.clear();
 
 await addNotesBtn.addEventListener('click' ,addNote);
 
@@ -76,12 +77,12 @@ function create_note_Cards(){
    noNotesList.style.display = 'none';//no-list-placeholder-div disable
    clickCount++;
 let card = document.createElement('div');
-card.className = 'note-cards';
+card.className = 'note_cards';
 card.id =`card${clickCount}`;
-card.innerHTML = `<div class = "note-flex">
-                   <div class = "text-container">
-                   <h3 class = "note-card-title">Untitled Note</h3>
-                   <p class = "note-card-content">No content</p>
+card.innerHTML = `<div class = "note_flex">
+                   <div class = "text_container">
+                   <h3 class = "note_card_title">Untitled Note</h3>
+                   <p class = "note_card_content">No content</p>
                     </div>
                    <div id="date">${dateData} <div>
                   
@@ -95,21 +96,6 @@ card.innerHTML = `<div class = "note-flex">
 
 // writing inputs  at a time pass to the card
 
-
-// card Selection 
-function setActiveCard(){
- 
-currentCard.addEventListener('click', e => {
-   currentCard = e.target
-   console.log(currentCard,"current card in  selected") 
-  const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
-  const title = e.currentTarget.querySelector('.note-card-title').textContent;
-  inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
-
-});
-}
-
-
 function inputPassCard(noteWritePannel){
     
   let inputTitle = noteWritePannel.querySelector('#note-write-tittle')
@@ -119,12 +105,34 @@ function inputPassCard(noteWritePannel){
    
     timeDiv.innerHTML = ` save:${currentTime}`//current time sets
    console.log(currentTime,"inside of fun")
-   localStorage.setItem(`${currentCard.id}`,JSON.stringify(currentTime))
-   // console.log(currentCard,"current card in  tittle input pass") 
-  currentCard.querySelector('.note-card-title').textContent = e.target.value.trim();//tilte input pass to card title
+   localStorage.setItem(`${currentCard.id}`,JSON.stringify(currentTime)) //set time to localstorage.
+ 
+  currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
   })
 
 }
+
+
+// card Selection 
+function setActiveCard(){
+ 
+currentCard.addEventListener('click', e => {
+   currentCard = e.target
+   console.log(currentCard,"current card in  selected") 
+  const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
+  const title = e.currentTarget.querySelector('.note_card_title').textContent;
+  inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
+ 
+  let timeGet = JSON.parse(localStorage.getItem(`${currentCard.id}`))
+//   console.log(currentCard.id,"timeGet")
+  timeDiv.innerHTML = timeGet;
+
+
+});
+}
+
+
+
 
 
 

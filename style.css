@@ -90,26 +90,34 @@ background-color: white;
 };
 
 
-.note-cards{
-   margin: 10px;
-   border: solid 1px rgb(134, 40, 40);
+.note_cards{
    cursor: pointer;
-   height: 60px;
+    margin: 20px;
    padding: 5px;
    width: auto;
+   
+   height: 100px;
+   
 }
 
-.note-card-title{
+.note_card_title{
 pointer-events: none;
 }
 
-.note-card-content{
+.note_card_content{
 pointer-events: none;
 }
 
-.note-flex{
+.note_flex{
     display: flex;
     justify-content: space-between;
+    pointer-events: none; 
+    margin: 10px;
+   padding: 5px;
+   border: solid 1px rgb(134, 40, 40);
+     width: auto;
+   height: 60px;
+      
 }
 
 
