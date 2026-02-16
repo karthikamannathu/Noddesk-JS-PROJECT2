@@ -3,24 +3,26 @@ const btnNotes = document.querySelector('#btn-notes');
 const btnTrash = document.querySelector('#btn-trash');
 const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
-const listCards = document.querySelector('.list-notes-cards')
+const noteCardsLists = document.querySelector('#note-cards-list')
 let noteWritePannel = document.querySelector('.notes-write-pannel');
 
-let clickCount =0;
- ;
+let clickCount = 0;
+toggle_my_note()
 
 btnNotes.addEventListener('click',toggle_my_note)
+
 async function toggle_my_note(){
-   btnNotes.classList.remove()
+btnNotes.classList.remove('in-active')
 btnNotes.classList.add('active');//toogle myNote buttun active
-btnTrash.classList.remove()
+btnTrash.classList.remove('active')
 btnTrash.classList.add('in-active')
+noteCardsLists.style.display = 'block'
 
 await addNotesBtn.addEventListener('click' ,addNote);
 
 try {
   
-//  console.log(listCards.forEach(item => {console.log(item)}))
+//  console.log(noteCardsLists.forEach(item => {console.log(item)}))
    // carditems.forEach(item => {
    //  item.addEventListener('click', () => {
    //    console.log(item);
@@ -62,7 +64,7 @@ card.className = 'note-cards';
 card.id =`card${clickCount}`;
 card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
                    <p class = "note-card-content">No content</p>`;
- listCards.appendChild(card);
+ noteCardsLists.appendChild(card);
  currentCard = card;
  setActiveCard();
 
@@ -104,10 +106,12 @@ function inputPassCard(noteWritePannel){
 btnTrash.addEventListener("click",tashNote)
 
 function tashNote(){
-   btnNotes.classList.remove()
+   btnNotes.classList.remove('active')
   btnNotes.classList.add('in-active');//toogle Trash buttun active
-  btnTrash.classList.remove()
-btnTrash.classList.add('active') 
+  btnTrash.classList.remove('in-active')
+  btnTrash.classList.add('active') 
+noteCardsLists.style.display = 'none'
+
 }
 
 
@@ -273,7 +277,7 @@ btnTrash.classList.add('active')
 
 // cards.innerHTML = `<h3 class = "note-card-title">Untiled Note</h3>
 //                    <p class = "note-card-content">No content</p>`;
-//  let currentCard = await listCards.appendChild(cards);
+//  let currentCard = await noteCardsLists.appendChild(cards);
 
 
 // const noteTitle = noteWrite.querySelector('#note-write-tittle');
@@ -301,7 +305,7 @@ btnTrash.classList.add('active')
 // let carditems =  Array.from(list.querySelectorAll('.note-cards'));
 // let listCard = carditems;
 // console.log(listCard.forEach(item =>item.addEventListener('click',() => console.log(item))))
-// // listCards.addEventListener('click',(e)=>console.log("clicked"))
+// // noteCardsLists.addEventListener('click',(e)=>console.log("clicked"))
 // };
 
 //  let card = cardList.querySelectorAll('.note-cards');
@@ -311,19 +315,19 @@ btnTrash.classList.add('active')
 // btnTrash.addEventListener('click',(e) =>{
 //   btnNotes.classList.remove('active');
 //   btnTrash.classList.add('active') ;
-//  listCards.style.display = 'none';
+//  noteCardsLists.style.display = 'none';
 
 
 // })
 
 // btnNotes.addEventListener('click',btnNotesTrue)
 
-// trashCards(listCards)
+// trashCards(noteCardsLists)
 
 // function btnNotesTrue(){
 //      btnTrash.classList.remove('active');
 //   btnNotes.classList.add('active') ;
-//    listCards.style.display = 'block';
+//    noteCardsLists.style.display = 'block';
     
     
    // }
