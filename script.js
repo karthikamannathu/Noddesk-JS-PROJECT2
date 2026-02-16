@@ -1,3 +1,5 @@
+
+
 const addNotesBtn = document.querySelector('#add-notes-btn');
 const btnNotes = document.querySelector('#btn-notes');
 const btnTrash = document.querySelector('#btn-trash');
@@ -6,8 +8,19 @@ const noNotes = document.querySelector('.placeholder');
 const noteCardsLists = document.querySelector('#note-cards-list')
 let noteWritePannel = document.querySelector('.notes-write-pannel');
 
+let currentTime = null;
+let currentCard = null;
+const timeDiv = document.querySelector('.save-time');
+let dateTimeSave  = new Date()
+let dateData = dateTimeSave.toLocaleDateString('en-US',{
+   month: 'short',
+  day: 'numeric'
+ });
 let clickCount = 0;
+
+
 toggle_my_note()
+
 
 btnNotes.addEventListener('click',toggle_my_note)
 
@@ -37,6 +50,7 @@ try {
 
 function addNote(){
 try {
+   saveTimes()
    create_note_Cards();
    create_note_write_pannel();
    }
@@ -62,8 +76,14 @@ function create_note_Cards(){
 let card = document.createElement('div');
 card.className = 'note-cards';
 card.id =`card${clickCount}`;
-card.innerHTML = `<h3 class = "note-card-title">Untitled Note</h3>
-                   <p class = "note-card-content">No content</p>`;
+card.innerHTML = `<div class = "note-flex">
+                   <div class = "text-container">
+                   <h3 class = "note-card-title">Untitled Note</h3>
+                   <p class = "note-card-content">No content</p>
+                    </div>
+                   <div id="date">${dateData} <div>
+                  
+                   </div>`;
  noteCardsLists.appendChild(card);
  currentCard = card;
  setActiveCard();
@@ -92,7 +112,7 @@ function inputPassCard(noteWritePannel){
     
   let inputTitle = noteWritePannel.querySelector('#note-write-tittle')
   inputTitle.addEventListener('input',(e) =>{
-   console.log(currentCard,"current card in  tittle input pass") 
+   // console.log(currentCard,"current card in  tittle input pass") 
   currentCard.querySelector('.note-card-title').textContent = e.target.value.trim();//tilte input pass to card title
   }
 )}
@@ -106,17 +126,24 @@ function inputPassCard(noteWritePannel){
 btnTrash.addEventListener("click",tashNote)
 
 function tashNote(){
-   btnNotes.classList.remove('active')
+  btnNotes.classList.remove('active')
   btnNotes.classList.add('in-active');//toogle Trash buttun active
   btnTrash.classList.remove('in-active')
   btnTrash.classList.add('active') 
 noteCardsLists.style.display = 'none'
-
+//  noNotes.style.display = 'flex';
+ add_trash_notes()
 }
 
+function saveTimes(){
+   currentTime = dateTimeSave.toLocaleTimeString()
+   // console.log( dateTimeSave.toLocaleTimeString())
+   timeDiv.innerHTML = `save: ${currentTime}`
+}
 
+function add_trash_notes(){
 
-
+}
  
 
 
