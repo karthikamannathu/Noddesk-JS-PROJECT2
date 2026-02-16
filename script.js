@@ -104,10 +104,11 @@ function inputPassCard(noteWritePannel){
    currentTime = new Date().toLocaleTimeString();
    
     timeDiv.innerHTML = ` save:${currentTime}`//current time sets
-   console.log(currentTime,"inside of fun")
-   localStorage.setItem(`${currentCard.id}`,JSON.stringify(currentTime)) //set time to localstorage.
+  
+   localStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime)) //set time to localstorage.
  
   currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
+
   })
 
 }
