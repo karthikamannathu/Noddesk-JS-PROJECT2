@@ -4,11 +4,8 @@
     font-size: 15px;
 };
 
-input{
-    border:none;
-}input:hover{
-    border: none;
-    outline: none;
+.note-cards-list{
+    background: #000;
 }
 
 .main-flex{
@@ -18,8 +15,8 @@ input{
     
 }
 
-.left-section{
-    width: 330px;
+.left_section{
+    width: 30%;
     height: 200vh;
     border: solid 1px black;
     padding: 10px;
@@ -122,9 +119,8 @@ pointer-events: none;
 /* right side */
 
 .notes-write-pannel{
-
 padding:30px;
-width: 550px;
+width: 600px;
 height: 200px;
 
 }
@@ -132,17 +128,18 @@ height: 200px;
 .input-text{
  width: 100%;
  height: 40px;
-
+ border: none;
 }
 
 
 #note-write-tittle{
 font-size: x-large;
-font-weight: bolder;
+
 }
 
-.right-section{
+.right_section{
     color:gray;
+   width: 65%;
 }
 
 .head_section_right{

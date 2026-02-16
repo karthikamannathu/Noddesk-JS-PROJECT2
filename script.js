@@ -50,9 +50,10 @@ try {
 
 function addNote(){
 try {
-   saveTimes()
+
    create_note_Cards();
    create_note_write_pannel();
+   saveTIme();
    }
    
  catch (error) {
@@ -66,7 +67,8 @@ function create_note_write_pannel(){
 
 noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
-                             inputPassCard(noteWritePannel)//pannel input pass cards                
+                             inputPassCard(noteWritePannel)//pannel input pass cards  
+                                 timeDiv.innerHTML =`last save: never`          
 }
 
 // create new note card
@@ -111,11 +113,18 @@ currentCard.addEventListener('click', e => {
 function inputPassCard(noteWritePannel){
     
   let inputTitle = noteWritePannel.querySelector('#note-write-tittle')
+   
   inputTitle.addEventListener('input',(e) =>{
+   currentTime = new Date().toLocaleTimeString();
+   
+    timeDiv.innerHTML = ` save:${currentTime}`//current time sets
+   console.log(currentTime,"inside of fun")
+   localStorage.setItem(`${currentCard.id}`,JSON.stringify(currentTime))
    // console.log(currentCard,"current card in  tittle input pass") 
   currentCard.querySelector('.note-card-title').textContent = e.target.value.trim();//tilte input pass to card title
-  }
-)}
+  })
+
+}
 
 
 
@@ -135,11 +144,20 @@ noteCardsLists.style.display = 'none'
  add_trash_notes()
 }
 
-function saveTimes(){
-   currentTime = dateTimeSave.toLocaleTimeString()
-   // console.log( dateTimeSave.toLocaleTimeString())
-   timeDiv.innerHTML = `save: ${currentTime}`
+function saveTIme() {
+  if (!currentTime) {
+    timeDiv.innerHTML = "Last saved: Never";
+  } else {
+   timeDiv.innerHTML = ` saved: ${currentTime}`;
+  }
 }
+
+   
+   // console.log( dateTimeSave.toLocaleTimeString())
+   
+     
+
+
 
 function add_trash_notes(){
 
