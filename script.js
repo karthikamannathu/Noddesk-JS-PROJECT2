@@ -9,7 +9,9 @@ const cardList =document.querySelector('.list_cards')
 const noteCardsLists = document.querySelector('#note-cards-list');
 let noteWritePannel = document.querySelector('.notes-write-pannel');
 let addTrashBtn = document.querySelector('.bi-trash3');
+let trashCardsList = document.querySelector('#trash-cards-list');
 let headSectionRight = document.querySelector('.head_section_right');
+
 
 let currentTime = null;
 let currentCard = null;
@@ -27,9 +29,6 @@ toggle_my_note()
 toggleBtnMyNote.addEventListener('click',toggle_my_note);
 toggleBtnTrash.addEventListener('click',tashNote);
 
-
-
-
 async function toggle_my_note(){
 toggleBtnMyNote.classList.remove('in-active')
 toggleBtnMyNote.classList.add('active');//toogle myNote buttun active
@@ -37,10 +36,10 @@ toggleBtnTrash.classList.remove('active')
 toggleBtnTrash.classList.add('in-active')
 noteCardsLists.style.display = 'block';
 headSectionRight.style.display = 'flex';
+trashCardsList.style.display = 'none';
 localStorage.clear();
 
-await addNotesBtn.addEventListener('click' ,addNote);
-
+addNotesBtn.addEventListener('click' ,addNote);
 };
 
 
@@ -82,13 +81,11 @@ card.innerHTML = `<div class = "note_flex">
                    <p class = "note_card_content">No content</p>
                     </div>
                    <div id="date">${dateData} <div>
-                  
                    </div>`;
  noteCardsLists.appendChild(card);
  currentCard = card;
  setActiveCard();
 addTrashBtn.addEventListener('click',add_trash);
-
 }
 
 // writing inputs  at a time pass to the card
@@ -140,12 +137,9 @@ function tashNote(){
   toggleBtnMyNote.classList.add('in-active');//toogle Trash buttun active
   toggleBtnTrash.classList.remove('in-active')
   toggleBtnTrash.classList.add('active') 
-  noNotesList.style.display = 'flex'
   noteCardsLists.style.display ='none';
-headSectionRight.style.display = 'none';
-//  noNotes.style.display = 'flex';
-create_trash_notes()
-
+  headSectionRight.style.display = 'none';
+  trashCardsList.style.display = 'block';
 }
 
 function saveTime() {
@@ -159,23 +153,20 @@ function saveTime() {
    
    
 
-function add_trash(){
-console.log(currentCard,"clicked trash")
+async function add_trash(){
+noNotesList.style.display = 'none';
 currentTrashCard = currentCard;      // active card is store
  currentCard.remove();                  //active card in my-note is remove
  currentCard = noteCardsLists.lastElementChild;        //assign , when the currentcard  is last created card
+ let card = currentTrashCard;
+  //  console.log(currentTrashCard,"currentTrashCard")
+  
+ await trashCardsList.appendChild(card);
+  
 }
  
 
-function create_trash_notes() {
-  noNotesList.style.display = 'none';
-  console.log(currentTrashCard,"currentTrashCard")
-  let card = document.createElement('div');
-card.className = 'trash_note_cards'
- card.appendChild(currentTrashCard);
- cardList.appendChild(card);
- 
-}
+
 
 
 
