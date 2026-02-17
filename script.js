@@ -1,18 +1,19 @@
 
 
 const addNotesBtn = document.querySelector('#add-notes-btn');
-const btnNotes = document.querySelector('#btn-notes');
-const btnTrash = document.querySelector('#btn-trash');
+const toggleBtnMyNote = document.querySelector('#btn-notes');
+const toggleBtnTrash = document.querySelector('#btn-trash');
 const noNotesList = document.querySelector('.no-notes');
 const noNotes = document.querySelector('.placeholder');
 const cardList =document.querySelector('.list_cards')
 const noteCardsLists = document.querySelector('#note-cards-list');
 let noteWritePannel = document.querySelector('.notes-write-pannel');
-let trashBtn = document.querySelector('.bi-trash3');
+let addTrashBtn = document.querySelector('.bi-trash3');
 let headSectionRight = document.querySelector('.head_section_right');
 
 let currentTime = null;
 let currentCard = null;
+let currentTrashCard = null;
 const timeDiv = document.querySelector('.save-time');
 let dateTimeSave  = new Date()
 let dateData = dateTimeSave.toLocaleDateString('en-US',{
@@ -23,20 +24,21 @@ let clickCount = 0;
 
 toggle_my_note()
 
-btnNotes.addEventListener('click',toggle_my_note)
+toggleBtnMyNote.addEventListener('click',toggle_my_note);
+toggleBtnTrash.addEventListener('click',tashNote);
 
 
 
 
 async function toggle_my_note(){
-btnNotes.classList.remove('in-active')
-btnNotes.classList.add('active');//toogle myNote buttun active
-btnTrash.classList.remove('active')
-btnTrash.classList.add('in-active')
+toggleBtnMyNote.classList.remove('in-active')
+toggleBtnMyNote.classList.add('active');//toogle myNote buttun active
+toggleBtnTrash.classList.remove('active')
+toggleBtnTrash.classList.add('in-active')
 noteCardsLists.style.display = 'block';
 headSectionRight.style.display = 'flex';
 localStorage.clear();
-headSectionRight.addEventListener('click',add_trash())
+
 await addNotesBtn.addEventListener('click' ,addNote);
 
 };
@@ -47,7 +49,7 @@ try {
 
    create_note_Cards();
    create_note_write_pannel();
-   saveTIme();
+   saveTime();
    }
    
  catch (error) {
@@ -62,7 +64,9 @@ function create_note_write_pannel(){
 noteWritePannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
                              inputPassCard(noteWritePannel)//pannel input pass cards  
-                                 timeDiv.innerHTML =`last save: never`          
+                                 timeDiv.innerHTML =`last save: never`  ;
+                                 
+                                  
 }
 
 // create new note card
@@ -83,7 +87,7 @@ card.innerHTML = `<div class = "note_flex">
  noteCardsLists.appendChild(card);
  currentCard = card;
  setActiveCard();
-
+addTrashBtn.addEventListener('click',add_trash);
 
 }
 
@@ -112,7 +116,7 @@ function setActiveCard(){
  
 currentCard.addEventListener('click', e => {
    currentCard = e.target
-   console.log(currentCard,"current card in  selected") 
+    // console.log(currentCard,"current card in  selected") 
   const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
   const title = e.currentTarget.querySelector('.note_card_title').textContent;
   inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
@@ -121,26 +125,21 @@ currentCard.addEventListener('click', e => {
 //   console.log(currentCard.id,"timeGet")
   timeDiv.innerHTML = timeGet;
 
+ 
 
 });
 }
 
 
 
-
-
-
-
-
 // Trash function start
 
-btnTrash.addEventListener("click",tashNote)
 
 function tashNote(){
-  btnNotes.classList.remove('active')
-  btnNotes.classList.add('in-active');//toogle Trash buttun active
-  btnTrash.classList.remove('in-active')
-  btnTrash.classList.add('active') 
+  toggleBtnMyNote.classList.remove('active')
+  toggleBtnMyNote.classList.add('in-active');//toogle Trash buttun active
+  toggleBtnTrash.classList.remove('in-active')
+  toggleBtnTrash.classList.add('active') 
 noteCardsLists.style.display = 'none';
  
 
@@ -150,7 +149,7 @@ headSectionRight.style.display = 'none';
 //  add_trash_notes()
 }
 
-function saveTIme() {
+function saveTime() {
   if (!currentTime) {
     timeDiv.innerHTML = "Last saved: Never";
   } else {
@@ -159,13 +158,19 @@ function saveTIme() {
 }
 
    
-   // console.log( dateTimeSave.toLocaleTimeString())
+   
    
      
 
 
 
 function add_trash(){
+// console.log(currentCard,"clicked trash")
+currentTrashCard = currentCard;// active card is store
+ currentCard.remove();//active card in my-note is remove
+ currentCard = noteCardsLists.lastElementChild;//assign , when the currentcard  is last created card
+
+
 
 }
  
@@ -303,11 +308,11 @@ function add_trash(){
 // let  cardList =''
 
 
-//  btnNotes.classList.add('active');
-//       btnTrash.classList.add('in-active')
+//  toggleBtnMyNote.classList.add('active');
+//       toggleBtnTrash.classList.add('in-active')
 
 //  addNotes.addEventListener('click',addNotesfun)
-//  btnNotesTrue()
+//  toggleBtnMyNoteTrue()
 //    async function  addNotesfun(){
 //    try {
      
@@ -363,21 +368,21 @@ function add_trash(){
 //  let list = Array.from(card);
 //   console.log(list.map(element => element.addEventListener("click",(e)=>console.log(`element is${element.childElementCount}`,e.target))))              
 
-// btnTrash.addEventListener('click',(e) =>{
-//   btnNotes.classList.remove('active');
-//   btnTrash.classList.add('active') ;
+// toggleBtnTrash.addEventListener('click',(e) =>{
+//   toggleBtnMyNote.classList.remove('active');
+//   toggleBtnTrash.classList.add('active') ;
 //  noteCardsLists.style.display = 'none';
 
 
 // })
 
-// btnNotes.addEventListener('click',btnNotesTrue)
+// toggleBtnMyNote.addEventListener('click',toggleBtnMyNoteTrue)
 
 // trashCards(noteCardsLists)
 
-// function btnNotesTrue(){
-//      btnTrash.classList.remove('active');
-//   btnNotes.classList.add('active') ;
+// function toggleBtnMyNoteTrue(){
+//      toggleBtnTrash.classList.remove('active');
+//   toggleBtnMyNote.classList.add('active') ;
 //    noteCardsLists.style.display = 'block';
     
     
