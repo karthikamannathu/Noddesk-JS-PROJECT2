@@ -140,10 +140,11 @@ function tashNote(){
   toggleBtnMyNote.classList.add('in-active');//toogle Trash buttun active
   toggleBtnTrash.classList.remove('in-active')
   toggleBtnTrash.classList.add('active') 
-  
-
+  noNotesList.style.display = 'flex'
+  noteCardsLists.style.display ='none';
 headSectionRight.style.display = 'none';
 //  noNotes.style.display = 'flex';
+create_trash_notes()
 
 }
 
@@ -159,23 +160,21 @@ function saveTime() {
    
 
 function add_trash(){
-// console.log(currentCard,"clicked trash")
+console.log(currentCard,"clicked trash")
 currentTrashCard = currentCard;      // active card is store
  currentCard.remove();                  //active card in my-note is remove
  currentCard = noteCardsLists.lastElementChild;        //assign , when the currentcard  is last created card
-create_trash_notes()
-
-
-
 }
  
 
 function create_trash_notes() {
+  noNotesList.style.display = 'none';
   console.log(currentTrashCard,"currentTrashCard")
   let card = document.createElement('div');
-card.className = 'trash_note_cards';
-noteCardsLists.appendChild(card);
-
+card.className = 'trash_note_cards'
+ card.appendChild(currentTrashCard);
+ cardList.appendChild(card);
+ 
 }
 
 
