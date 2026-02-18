@@ -8,7 +8,6 @@ const noInputs = document.querySelector('.placeholder');
 const cardList =document.querySelector('.list_cards')
 const noteCardsLists = document.querySelector('#note-cards-list');
 const inputPannel = document.querySelector('#inputs-condiner');
-
 const noteWritePannel = document.querySelector('.notes-write-pannel');
 const addTrashBtn = document.querySelector('.bi-trash3');
 const icons = document.querySelector('.icon');
@@ -47,7 +46,7 @@ headSectionRight.style.display = 'flex';
 
 noInputs.style.display = 'flex';
 sessionStorage.clear();
-// localStorage.clear();
+//  localStorage.clear();
 addNotesBtn.addEventListener('click' ,addNote);
 if (currentCard) {
     create_note_write_pannel();
@@ -82,16 +81,11 @@ inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Ti
 function create_note_Cards(){
    noNotes.style.display = 'none';//no-list-placeholder-div disable
    clickCount++;
-let card = document.createElement('div');
-card.className = 'note_cards';
-card.id =`card${clickCount}`;
-card.innerHTML = `<div class = "note_flex">
-                   <div class = "text_container">
-                   <h3 class = "note_card_title">Untitled Note</h3>
-                   <p class = "note_card_content">No content</p>
-                    </div>
-                   <div id="date">${dateData} <div>
-                   </div>`;
+let card = create_cards({
+  id :`card${clickCount}`,
+  className :'note-card',
+  dateData
+});
  noteCardsLists.appendChild(card);
  currentCard = card;
  setActiveCard();
@@ -121,16 +115,16 @@ function inputPassCard(notePannel){
 // card Selection 
 function setActiveCard(){
  
-currentCard.addEventListener('click', e => {
+currentCard.addEventListener('click', (e)=> {
    currentCard = e.target
     // console.log(currentCard,"current card in  selected") 
   const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
-  const title = e.currentTarget.querySelector('.note_card_title').textContent;
+  const title = currentCard.querySelector('.note_card_title').textContent;
   inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
  
   let timeGet = JSON.parse(sessionStorage.getItem(`${currentCard.id}time`))
 //   console.log(currentCard.id,"timeGet")
-  timeDiv.innerHTML = timeGet;
+  timeDiv.innerHTML = timeGet ||'Never savetime';
 
 });
 }
@@ -155,8 +149,8 @@ function tashNote(){
   trashCardsList.style.display = 'block';
   inputPannel.innerHTML = '';
   headSectionRight.style.display = 'none';
-  
  noInputs.style.display = 'flex';
+ create_trash_card()
 }
 
 
@@ -167,20 +161,23 @@ function tashNote(){
 async function add_trash(){
   if (currentTime) {
 console.log()
-    const trashData = {
+    let trashData = {
+      id:currentCard.id,
     title: currentCard.querySelector('.note_card_title').textContent,
       dateData : currentCard.querySelector('#date').textContent
      }
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
 
 
-     localStorage.setItem('trash',JSON.stringify(trashData));
+  localStorage.setItem(`${trashData.id}`,JSON.stringify(trashData));
+
+     
      noNotes.style.display = 'none';
       // active card is store;
       
    currentCard.remove();
    currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
-   create_trash_card()
+   create_trash_card(trashData)
   
    //active card in my-note is remove
   
@@ -190,39 +187,52 @@ console.log()
 }
  
 
-function create_trash_card(){
-  let cardData = JSON.parse(localStorage.getItem(`trash`));
-newCard = document.createElement('div');
-newCard.classList.add('note-card');
+function create_trash_card(trashData){
+ 
+  let cardData = JSON.parse(localStorage.getItem(`${trashData.id}`));
+  
+let cards = create_cards({
+  id : cardData.id,
+  className:"trash-card",
+  title:`${cardData.title}`,
+ dateData: cardData.dateData
 
-newCard.innerHTML = `<div class = "note_flex">
-                   <div class = "text_container">
-                   <h3 class = "note_card_title">Untitled Note</h3>
-                   <p class = "note_card_content">No content</p>
-                    </div>
-                   
-                   </div>`;
+})
+
     
      console.log(cardData,"currentTrashCard")
      //  <div id="date">${dateData} <div>
-   trashCardsList.appendChild(newCard);
+   trashCardsList.appendChild(cards);
 }
 
 
 
 
-function create_cards(){
-  let card = document.createElement('div');
-card.className = 'note_cards';
-card.id =`card${clickCount}`;
-card.innerHTML = `<div class = "note_flex">
+function create_cards({
+  id,
+  className,
+   title = "Untitled Note",
+   content = "No content",
+    dateData
+})
+  {
+
+
+    let card = document.createElement('div');
+     if(id) card.id = id
+ 
+card.className = className;
+card.innerHTML += `<div class = "note_flex">
                    <div class = "text_container">
-                   <h3 class = "note_card_title">Untitled Note</h3>
-                   <p class = "note_card_content">No content</p>
+                   <h3 class = "note_card_title">${title}</h3>
+                   <p class = "note_card_content">${content}</p>
                     </div>
                    <div id="date">${dateData} <div>
                    </div>`;
-}
+    return card
+ 
+  }
+
 
 
 
