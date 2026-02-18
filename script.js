@@ -11,6 +11,7 @@ const inputPannel = document.querySelector('#inputs-condiner');
 
 const noteWritePannel = document.querySelector('.notes-write-pannel');
 const addTrashBtn = document.querySelector('.bi-trash3');
+const icons = document.querySelector('.icon');
 const  trashCardsList = document.querySelector('#trash-cards-list');
 const headSectionRight = document.querySelector('.head_section_right');
 const timeDiv = document.querySelector('.save-time');
@@ -45,8 +46,13 @@ noteCardsLists.style.display = 'block';
 headSectionRight.style.display = 'flex';
 
 noInputs.style.display = 'flex';
-localStorage.clear();
+sessionStorage.clear();
+// localStorage.clear();
 addNotesBtn.addEventListener('click' ,addNote);
+if (currentCard) {
+    create_note_write_pannel();
+} 
+
 };
 
 
@@ -54,7 +60,7 @@ function addNote(){
 try {
 
    create_note_Cards();
-   create_note_write_pannel();
+ create_note_write_pannel();
    saveTime();
    }
    
@@ -66,14 +72,11 @@ try {
 // inputs pannel create
 function create_note_write_pannel(){
 noInputs.style.display ='none'
-
 inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
                              inputPassCard(inputPannel)//pannel input pass cards  
-                                 timeDiv.innerHTML =`last save: never`  ;
-                                 
-                                  
-}
+                                 timeDiv.innerHTML =`last save: never`;
+                                 }
 
 // create new note card
 function create_note_Cards(){
@@ -99,14 +102,14 @@ addTrashBtn.addEventListener('click',add_trash);
 
 function inputPassCard(notePannel){
     
-  let inputTitle = notePannel.querySelector('#note-write-tittle')
+  let inputTitle = notePannel.querySelector('#note-write-tittle');
    
   inputTitle.addEventListener('input',(e) =>{
    currentTime = new Date().toLocaleTimeString();
    
     timeDiv.innerHTML = ` save:${currentTime}`//current time sets
   
-   localStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime)) //set time to localstorage.
+  sessionStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime)) //set time to localstorage.
  
   currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
 
@@ -125,7 +128,7 @@ currentCard.addEventListener('click', e => {
   const title = e.currentTarget.querySelector('.note_card_title').textContent;
   inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
  
-  let timeGet = JSON.parse(localStorage.getItem(`${currentCard.id}time`))
+  let timeGet = JSON.parse(sessionStorage.getItem(`${currentCard.id}time`))
 //   console.log(currentCard.id,"timeGet")
   timeDiv.innerHTML = timeGet;
 
@@ -151,7 +154,7 @@ function tashNote(){
   noteCardsLists.style.display ='none';
   trashCardsList.style.display = 'block';
   inputPannel.innerHTML = '';
-  addTrashBtn.style.display = 'none';
+  headSectionRight.style.display = 'none';
   
  noInputs.style.display = 'flex';
 }
@@ -162,27 +165,64 @@ function tashNote(){
    
 
 async function add_trash(){
-noNotes.style.display = 'none';
-currentTrashCard = currentCard;      // active card is store
-currentCard.remove();  
- 
+  if (currentTime) {
+console.log()
+    const trashData = {
+    title: currentCard.querySelector('.note_card_title').textContent,
+      dateData : currentCard.querySelector('#date').textContent
+     }
+    // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
 
- //active card in my-note is remove
- currentCard = noteCardsLists.lastElementChild;        //assign , when the currentcard  is last created card
- let card = currentTrashCard;
-  //  console.log(currentTrashCard,"currentTrashCard")
+
+     localStorage.setItem('trash',JSON.stringify(trashData));
+     noNotes.style.display = 'none';
+      // active card is store;
+      
+   currentCard.remove();
+   currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
+   create_trash_card()
   
- await trashCardsList.appendChild(card);
+   //active card in my-note is remove
   
+  } else {
+    console.error(" you try add empty note ! ")
+  }  
 }
  
 
+function create_trash_card(){
+  let cardData = JSON.parse(localStorage.getItem(`trash`));
+newCard = document.createElement('div');
+newCard.classList.add('note-card');
+
+newCard.innerHTML = `<div class = "note_flex">
+                   <div class = "text_container">
+                   <h3 class = "note_card_title">Untitled Note</h3>
+                   <p class = "note_card_content">No content</p>
+                    </div>
+                   
+                   </div>`;
+    
+     console.log(cardData,"currentTrashCard")
+     //  <div id="date">${dateData} <div>
+   trashCardsList.appendChild(newCard);
+}
 
 
 
 
-
-
+function create_cards(){
+  let card = document.createElement('div');
+card.className = 'note_cards';
+card.id =`card${clickCount}`;
+card.innerHTML = `<div class = "note_flex">
+                   <div class = "text_container">
+                   <h3 class = "note_card_title">Untitled Note</h3>
+                   <p class = "note_card_content">No content</p>
+                    </div>
+                   <div id="date">${dateData} <div>
+                   </div>`;
+}
 
 
 
