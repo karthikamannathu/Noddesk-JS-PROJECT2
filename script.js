@@ -15,6 +15,8 @@ const  trashCardsList = document.querySelector('#trash-cards-list');
 const headSectionRight = document.querySelector('.head_section_right');
 const timeDiv = document.querySelector('.save-time');
 
+
+ let trashData = null;
 let currentTime = null;
 let currentCard = null;
 let currentTrashCard = null;
@@ -150,7 +152,7 @@ function tashNote(){
   inputPannel.innerHTML = '';
   headSectionRight.style.display = 'none';
  noInputs.style.display = 'flex';
- create_trash_card()
+ 
 }
 
 
@@ -161,7 +163,7 @@ function tashNote(){
 async function add_trash(){
   if (currentTime) {
 console.log()
-    let trashData = {
+  trashData = {
       id:currentCard.id,
     title: currentCard.querySelector('.note_card_title').textContent,
       dateData : currentCard.querySelector('#date').textContent
@@ -169,17 +171,16 @@ console.log()
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
 
 
-  localStorage.setItem(`${trashData.id}`,JSON.stringify(trashData));
+  localStorage.setItem(`trash`,JSON.stringify(trashData));
 
      
      noNotes.style.display = 'none';
       // active card is store;
       
-   currentCard.remove();
+   currentCard.remove();//active card in my-note is remove
    currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
-   create_trash_card(trashData)
+
   
-   //active card in my-note is remove
   
   } else {
     console.error(" you try add empty note ! ")
@@ -187,10 +188,7 @@ console.log()
 }
  
 
-function create_trash_card(trashData){
- 
-  let cardData = JSON.parse(localStorage.getItem(`${trashData.id}`));
-  
+function create_trash_card(cardData){ 
 let cards = create_cards({
   id : cardData.id,
   className:"trash-card",
@@ -199,7 +197,8 @@ let cards = create_cards({
 
 })
 
-    
+   let cardDatas = JSON.parse(localStorage.getItem(`trash`));
+   create_trash_card(cardDatas)  
      console.log(cardData,"currentTrashCard")
      //  <div id="date">${dateData} <div>
    trashCardsList.appendChild(cards);
