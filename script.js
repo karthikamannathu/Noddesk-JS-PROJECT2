@@ -44,11 +44,11 @@ toggleBtnTrash.classList.remove('active')
 toggleBtnTrash.classList.add('in-active')
 trashCardsList.style.display = 'none';
 noteCardsLists.style.display = 'block';
-headSectionRight.style.display = 'flex';
+headSectionRight.style.display = 'none';
 
 noInputs.style.display = 'flex';
 sessionStorage.clear();
-//  localStorage.clear();
+  // localStorage.clear();
 addNotesBtn.addEventListener('click' ,addNote);
 if (currentCard) {
     create_note_write_pannel();
@@ -81,6 +81,7 @@ inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Ti
 
 // create new note card
 function create_note_Cards(){
+  headSectionRight.style.display = 'flex';
    noNotes.style.display = 'none';//no-list-placeholder-div disable
    clickCount++;
 let card = create_cards({
@@ -152,6 +153,8 @@ function tashNote(){
   inputPannel.innerHTML = '';
   headSectionRight.style.display = 'none';
  noInputs.style.display = 'flex';
+ trashCardsList.innerHTML = '';
+  save_trash_cards();
  
 }
 
@@ -162,18 +165,17 @@ function tashNote(){
 
 async function add_trash(){
   if (currentTime) {
-console.log()
+// console.log()
   trashData = {
-      id:currentCard.id,
-    title: currentCard.querySelector('.note_card_title').textContent,
+      id :  currentCard.id,
+      title : currentCard.querySelector('.note_card_title').textContent,
       dateData : currentCard.querySelector('#date').textContent
      }
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
-
-
-  localStorage.setItem(`trash`,JSON.stringify(trashData));
-
-     
+let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
+       newNote.push(trashData)
+      localStorage.setItem(`trash`,JSON.stringify(newNote));
+    
      noNotes.style.display = 'none';
       // active card is store;
       
@@ -183,25 +185,34 @@ console.log()
   
   
   } else {
-    console.error(" you try add empty note ! ")
+    alert.error(" you try to add a empty note ! ")
   }  
 }
  
 
-function create_trash_card(cardData){ 
-let cards = create_cards({
-  id : cardData.id,
+function save_trash_cards(){ 
+    
+    data = JSON.parse(localStorage.getItem(`trash`)) || []
+  //  console.log(data,"currentTrashCard");
+
+  data.forEach(element => {
+
+  let cards = create_cards({
+        
+  id :element.id,
   className:"trash-card",
-  title:`${cardData.title}`,
- dateData: cardData.dateData
+  title:element.title,
+ dateData: element.dateData
 
-})
-
-   let cardDatas = JSON.parse(localStorage.getItem(`trash`));
-   create_trash_card(cardDatas)  
-     console.log(cardData,"currentTrashCard")
+}) 
+trashCardsList.appendChild(cards);
+  });
+    
+     
      //  <div id="date">${dateData} <div>
-   trashCardsList.appendChild(cards);
+   
+
+
 }
 
 
