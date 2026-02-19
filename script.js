@@ -10,6 +10,7 @@ const noteCardsLists = document.querySelector('#note-cards-list');
 const inputPannel = document.querySelector('#inputs-condiner');
 const noteWritePannel = document.querySelector('.notes-write-pannel');
 const addTrashBtn = document.querySelector('.bi-trash3');
+const addBookmarkBtn = document.querySelector('.bi-bookmark');
 const icons = document.querySelector('.icon');
 const  trashCardsList = document.querySelector('#trash-cards-list');
 const headSectionRight = document.querySelector('.head_section_right');
@@ -32,7 +33,7 @@ toggle_my_note()
 
 
 toggleBtnMyNote.addEventListener('click',toggle_my_note);
-toggleBtnTrash.addEventListener('click',tashNote);
+toggleBtnTrash.addEventListener('click',toggle_trash_note);
 
 noNotes.style.display = 'block';
 
@@ -52,6 +53,9 @@ sessionStorage.clear();
 addNotesBtn.addEventListener('click' ,addNote);
 if (currentCard) {
     create_note_write_pannel();
+     headSectionRight.style.display = 'flex';
+     console.log(noteCardsLists.firstChild)
+     inputPannel.querySelector('#note-write-tittle').innerHTML = noteCardsLists.firstChild.innerHTML
 } 
 
 };
@@ -77,14 +81,14 @@ inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Ti
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
                              inputPassCard(inputPannel)//pannel input pass cards  
                                  timeDiv.innerHTML =`last save: never`;
-                                 }
+};
 
 // create new note card
 function create_note_Cards(){
   headSectionRight.style.display = 'flex';
    noNotes.style.display = 'none';//no-list-placeholder-div disable
    clickCount++;
-let card = create_cards({
+let card = create_cards_models({
   id :`card${clickCount}`,
   className :'note-card',
   dateData
@@ -93,7 +97,8 @@ let card = create_cards({
  currentCard = card;
  setActiveCard();
 addTrashBtn.addEventListener('click',add_trash);
-}
+
+};
 
 // writing inputs  at a time pass to the card
 
@@ -112,7 +117,7 @@ function inputPassCard(notePannel){
 
   })
 
-}
+};
 
 
 // card Selection 
@@ -130,7 +135,7 @@ currentCard.addEventListener('click', (e)=> {
   timeDiv.innerHTML = timeGet ||'Never savetime';
 
 });
-}
+};
 
 function saveTime() {
   if (!currentTime) {
@@ -138,12 +143,13 @@ function saveTime() {
   } else {
    timeDiv.innerHTML = ` saved: ${currentTime}`;
   }
-}
+};
+  
 
 // Trash function start
 
 
-function tashNote(){
+function toggle_trash_note(){
   toggleBtnMyNote.classList.remove('active')
   toggleBtnMyNote.classList.add('in-active');//toogle Trash buttun active
   toggleBtnTrash.classList.remove('in-active')
@@ -156,13 +162,9 @@ function tashNote(){
  trashCardsList.innerHTML = '';
   save_trash_cards();
  
-}
-
-
-
-   
-   
-
+};
+     
+// add_trash() from create_note_Cards()
 async function add_trash(){
   if (currentTime) {
 // console.log()
@@ -180,6 +182,8 @@ let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
       // active card is store;
       
    currentCard.remove();//active card in my-note is remove
+   let inputTitle = inputPannel.querySelector('#note-write-tittle');
+   inputTitle.value = ''
    currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
 
   
@@ -187,18 +191,18 @@ let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
   } else {
     alert.error(" you try to add a empty note ! ")
   }  
-}
+};
  
 
 function save_trash_cards(){ 
     
-    data = JSON.parse(localStorage.getItem(`trash`)) || []
+    data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
   //  console.log(data,"currentTrashCard");
 
   data.forEach(element => {
 
-  let cards = create_cards({
-        
+  let cards = create_cards_models({
+    //create trash cards    
   id :element.id,
   className:"trash-card",
   title:element.title,
@@ -209,16 +213,16 @@ trashCardsList.appendChild(cards);
   });
     
      
-     //  <div id="date">${dateData} <div>
-   
+    
 
 
-}
+};
 
 
 
 
-function create_cards({
+
+function create_cards_models({
   id,
   className,
    title = "Untitled Note",
@@ -241,7 +245,7 @@ card.innerHTML += `<div class = "note_flex">
                    </div>`;
     return card
  
-  }
+  };
 
 
 
