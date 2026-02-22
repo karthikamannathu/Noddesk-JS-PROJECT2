@@ -49,13 +49,16 @@ headSectionRight.style.display = 'none';
 
 noInputs.style.display = 'flex';
 sessionStorage.clear();
-  // localStorage.clear();
+  //  localStorage.clear();
 addNotesBtn.addEventListener('click' ,addNote);
 if (currentCard) {
     create_note_write_pannel();
      headSectionRight.style.display = 'flex';
-     console.log(noteCardsLists.firstChild)
-     inputPannel.querySelector('#note-write-tittle').innerHTML = noteCardsLists.firstChild.innerHTML
+    
+     currentCard  = noteCardsLists.firstChild
+     console.log(currentCard,"current card after")
+      const title = currentCard.querySelector('.note_card_title').textContent;
+      inputPannel.querySelector('#note-write-tittle').value = title === 'Untitled Note' ? '' : title;
 } 
 
 };
@@ -105,16 +108,16 @@ addTrashBtn.addEventListener('click',add_trash);
 function inputPassCard(notePannel){
     
   let inputTitle = notePannel.querySelector('#note-write-tittle');
-   
   inputTitle.addEventListener('input',(e) =>{
-   currentTime = new Date().toLocaleTimeString();
-   
+    currentTime = new Date().toLocaleTimeString();
+    
     timeDiv.innerHTML = ` save:${currentTime}`//current time sets
-  
-  sessionStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime)) //set time to localstorage.
- 
-  currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
-
+    
+    sessionStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime)) //set time to localstorage.
+    
+    // console.log(e.target.value.trim())
+    currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
+    
   })
 
 };
