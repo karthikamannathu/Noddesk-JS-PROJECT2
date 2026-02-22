@@ -56,7 +56,7 @@ if (currentCard) {
      headSectionRight.style.display = 'flex';
     
      currentCard  = noteCardsLists.firstChild
-     console.log(currentCard,"current card after")
+    //  console.log(currentCard,"current card after")
       const title = currentCard.querySelector('.note_card_title').textContent;
       inputPannel.querySelector('#note-write-tittle').value = title === 'Untitled Note' ? '' : title;
 } 
@@ -131,6 +131,7 @@ currentCard.addEventListener('click', (e)=> {
     // console.log(currentCard,"current card in  selected") 
   const inputPannel = noteWritePannel.querySelector('#note-write-tittle');
   const title = currentCard.querySelector('.note_card_title').textContent;
+  console.log(inputPannel,"inputPannel.value ")
   inputPannel.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
  
   let timeGet = JSON.parse(sessionStorage.getItem(`${currentCard.id}time`))
@@ -159,12 +160,16 @@ function toggle_trash_note(){
   toggleBtnTrash.classList.add('active') 
   noteCardsLists.style.display ='none';
   trashCardsList.style.display = 'block';
-  inputPannel.innerHTML = '';
   headSectionRight.style.display = 'none';
  noInputs.style.display = 'flex';
  trashCardsList.innerHTML = '';
-  save_trash_cards();
- 
+  create_trash_cards();
+ currentCard = trashCardsList.firstElementChild
+  // currentCard = trashCardsList;
+ console.log(inputPannel)
+       const title = currentCard.querySelector('.note_card_title').textContent;
+      inputPannel.querySelector('#note-write-tittle').value = title === 'Untitled Note' ? '' : title;
+     
 };
      
 // add_trash() from create_note_Cards()
@@ -176,6 +181,8 @@ async function add_trash(){
       title : currentCard.querySelector('.note_card_title').textContent,
       dateData : currentCard.querySelector('#date').textContent
      }
+
+    
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
 let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
        newNote.push(trashData)
@@ -197,7 +204,7 @@ let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
 };
  
 
-function save_trash_cards(){ 
+function create_trash_cards(){ 
     
     data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
   //  console.log(data,"currentTrashCard");
@@ -213,6 +220,8 @@ function save_trash_cards(){
 
 }) 
 trashCardsList.appendChild(cards);
+currentCard = cards;
+ setActiveCard();
   });
     
      
