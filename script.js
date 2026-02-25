@@ -9,6 +9,8 @@ const noInputs = document.querySelector('.placeholder');
 const inputPannel = document.querySelector('#inputs-condiner');
 const noteWritePannel = document.querySelector('.notes-write-pannel');
  const timeSave = document.querySelector('.save-time');
+ const cookiesStorageCount= document.querySelector('#storage_count');
+ const cookiesStorageGreen= document.querySelector('.greenbox');
 
 
  let dateTimeSave  = new Date();
@@ -21,7 +23,7 @@ let currentTime = null;
 let currentCard = null;
 
 toggleBtnMyNoteActive()//defult set toggle MyNote button active
-
+cookiesflg();
 
 toggleBtnMyNote.addEventListener('click',toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener('click',toggleBtnTrashActive);
@@ -186,6 +188,11 @@ currentCard.addEventListener('click', async (e)=> {
   // }
 }
 
+
+function cookiesflg(){
+ let cookieData = cookieStore.getAll();
+ console.log(cookieData);
+}
 
 
 

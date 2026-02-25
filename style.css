@@ -17,11 +17,16 @@
 
 .left_section{
     width: 30%;
-    height: 200vh;
+    height: 100vh;
     border: solid 1px black;
     padding: 10px;
     display: flex;
     flex-direction: column;
+}
+.list_cards_section{
+    min-height: 550px;
+    width: auto;
+  
 }
 
 .main-head{
@@ -95,7 +100,6 @@ background-color: white;
     margin: 20px;
    padding: 5px;
    width: auto;
-   
    height: 100px;
    
 }
@@ -124,8 +128,24 @@ pointer-events: none;
     display: none;
 }
 
+.flex-box{
+    display: flex;
+    justify-content: space-between;
+}
 
+#storage_count{
+    width: 30px;
+    height: auto;
+    background-color: blue;
+}
 
+.greenbox{
+    width: auto;
+    height: 5px;
+    margin-top: 5px;
+   background:rgb(160, 160, 160);
+    border-radius: 20px;
+}
 /* right side */
 
 .notes-write-pannel{
