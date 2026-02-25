@@ -9,7 +9,9 @@ const noInputs = document.querySelector('.placeholder');
 const inputPannel = document.querySelector('#inputs-condiner');
 const noteWritePannel = document.querySelector('.notes-write-pannel');
  const timeSave = document.querySelector('.save-time');
-let dateTimeSave  = new Date()
+
+
+ let dateTimeSave  = new Date();
 let dateData = dateTimeSave.toLocaleDateString('en-US',{
    month: 'short',
   day: 'numeric'
@@ -17,13 +19,12 @@ let dateData = dateTimeSave.toLocaleDateString('en-US',{
 let clickCount = 0;
 let currentTime = null;
 let currentCard = null;
-let cookiesArray = ''
+
 toggleBtnMyNoteActive()//defult set toggle MyNote button active
 
 
 toggleBtnMyNote.addEventListener('click',toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener('click',toggleBtnTrashActive);
-
 
 
 function toggleBtnMyNoteActive(){
@@ -32,7 +33,8 @@ function toggleBtnMyNoteActive(){
     toggleBtnMyNote.classList.add('active');
     toggleBtnTrash.classList.remove('active');
     toggleBtnTrash.classList.add('in-active');
-   
+
+
 
     // add the notes
     addNotesBtn.addEventListener('click',addNewNotes);
@@ -92,17 +94,20 @@ inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Ti
                              inputPassCard(inputPannel)//pannel input pass cards  
                                  timeSave.innerHTML =`last save: never`;
 };
+
+//inputs pass to selected card
 function inputPassCard(notePannel){
     
   let inputTitle = notePannel.querySelector('#note-write-tittle');
-  inputTitle.addEventListener('input',(e) =>{
+  inputTitle.addEventListener('input',async (e) =>{
     currentTime = new Date().toLocaleTimeString();
     
-    timeSave.innerHTML = ` saved  :${currentTime}`//current time sets
-    document.cookie =`${currentCard.id}time = ${currentTime}`;
+    timeSave.innerHTML = ` saved  :${currentTime}`;//current time sets
+     await cookieStore.set({ name: `${currentCard.id}time`,
+  value: String(currentTime)});
   //  sessionStorage.setItem(`${currentCard.id}time`,JSON.stringify(currentTime))//set time to localstorage.
-    
-    console.log(document.cookie.length,"document.cookie.lenth")
+    // cookiesLength = document.cookie.length;
+    // console.log(  cookiesLength,"  cookiesLength")
     currentCard.querySelector('.note_card_title').textContent = e.target.value.trim();//tilte input pass to card title
     
   })
@@ -117,6 +122,8 @@ function setSaveTime() {
   }
 };
 
+
+// creating  cards models for  trashs /notes cards
 function create_cards_models({
   id,
   className,
@@ -142,10 +149,10 @@ card.innerHTML += `<div class = "note_flex">
  
   };
 
-
+// Set active card // 
  function setActiveCard(){
  
-currentCard.addEventListener('click', (e)=> {
+currentCard.addEventListener('click', async (e)=> {
  noInputs.style.display = 'none';
  inputPannel.style.display = 'block'
    currentCard = e.target;
@@ -155,29 +162,34 @@ currentCard.addEventListener('click', (e)=> {
   const title = currentCard.querySelector('.note_card_title').textContent;
  console.log(inputPannel,"inputPannel.value ")
   inputPannelTitile.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
-  let timeGet = getCookies(`${currentCard.id}time` )
+  let timeGet = await getCookies(`${currentCard.id}time` )
 //  let timeGet = JSON.parse(sessionStorage.getItem(`${currentCard.id}time`))
-//   console.log(currentCard.id,"timeGet")
+  // console.log(timeGet,"timeGet")
   timeSave.innerHTML = `saved : ${timeGet}` ||'Last saved : Never ';
 
 });
 };
 
 
-function getCookies(name){
-  let cookies = document.cookie.split(';');
-  for(i=0; i<cookies.length ;i++){
-     cookiesArray = cookies[i].trim();
-  console.log(cookiesArray.length)
-    if (cookiesArray.indexOf(name + "=") === 0) {
-      return cookiesArray.substring(name.length + 1);
-    }
+ async function getCookies(name){
+  let cookies = await cookieStore.get({name:name})
+  // console.log(cookies.value,"cookies")
+  let cookieTimeGet = cookies.value ;
+ return cookieTimeGet;
+  // for(i=0; i<cookies.length ;i++){
+
+  //   let cookiesArray = cookies[i].value.trim();
+  //  console.log(cookiesArray,"cookies data")
     
-  }
+  
+    
+  // }
 }
 
 
-console.log(cookiesArray.length)
+
+
+
 
 
 
