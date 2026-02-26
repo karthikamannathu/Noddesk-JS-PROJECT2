@@ -100,8 +100,11 @@ noInputs.style.display ='none';
 
 inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
                            <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
-                           
+                           if(!currentTime){
                            timeSave.innerHTML =`last save: never`;
+                           }else{
+                            ` saved  :${currentTime}`
+                           }
                            inputPassCard(inputPannel)//pannel input pass cards  
                                  
 };
@@ -241,7 +244,7 @@ return data.timestamp;
    let values= data.value.length
   return values}
  )
- console.log(data)
+//  console.log(data)
  let totalSize = data.reduce((acc,cookie) =>{
   
   return acc + cookie
