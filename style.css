@@ -131,12 +131,12 @@ pointer-events: none;
 .flex-box{
     display: flex;
     justify-content: space-between;
+   
 }
 
 #storage_count{
-    width: 30px;
-    height: auto;
-    background-color: blue;
+   
+    font-size: 12px;
 }
 
 .greenbox{
@@ -145,6 +145,8 @@ pointer-events: none;
     margin-top: 5px;
    background:rgb(160, 160, 160);
     border-radius: 20px;
+    display: flex;
+    object-fit: contain;
 }
 /* right side */
 
