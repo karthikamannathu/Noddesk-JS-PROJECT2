@@ -11,7 +11,9 @@ const noteWritePannel = document.querySelector('.notes-write-pannel');
  const timeSave = document.querySelector('.save-time');
  const cookiesStorageCount = document.querySelector('#storage_count');
  const cookiesStorageGreen = document.querySelector('.greenbox');
+ const addTrashBtn = document.querySelector('.bi-trash3');
 
+ 
 
  let dateTimeSave  = new Date();
 let dateData = dateTimeSave.toLocaleDateString('en-US',{
@@ -27,7 +29,7 @@ toggleBtnMyNoteActive()//defult set toggle MyNote button active
 
 toggleBtnMyNote.addEventListener('click',toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener('click',toggleBtnTrashActive);
-
+headSectionRight.style.display = 'none';
 
 async function toggleBtnMyNoteActive(){
   try {
@@ -35,7 +37,7 @@ async function toggleBtnMyNoteActive(){
     toggleBtnMyNote.classList.add('active');
     toggleBtnTrash.classList.remove('active');
     toggleBtnTrash.classList.add('in-active');
-
+     noteCardsLists.style.display ='block';
     // CookieStore.clear();
 const cookies = await cookieStore.getAll();
 cookies.forEach(async cookie  => {
@@ -56,17 +58,25 @@ cookies.forEach(async cookie  => {
 
 function toggleBtnTrashActive(){
   try {
-    toggleBtnMyNote.classList.remove('active');
+        toggleBtnMyNote.classList.remove('active');
         toggleBtnTrash.classList.add('active');
         toggleBtnTrash.classList.remove('in-active');
-    
+        
+        noteCardsLists.style.display ='none';
+        trashCardsList.style.display = 'block';
+  
+        noInputs.style.display = 'none';
+        trashCardsList.innerHTML = '';
+        inputPannel.style.display ='none';
+        toggle_trash_note()
+        
   } catch (error) {
     console.log(error)
   }
 };
 
 
-//Cards creations models
+
 
 
 function addNewNotes() {
@@ -79,7 +89,7 @@ function addNewNotes() {
 
 // Notes Cards creations
 function create_note_Cards(){
- headSectionRight.style.display = 'flex';
+ 
  noCards.style.display = 'none';//no-list-message-div disable
    clickCount++;
 let card = create_cards_models({
@@ -89,24 +99,30 @@ let card = create_cards_models({
 });
  noteCardsLists.appendChild(card);
  currentCard = card;
+
  setActiveCard();
 };
 
  // inputs pannel create
 function create_note_write_pannel(){
+headSectionRight.style.display = 'flex';
 noInputs.style.display ='none';
  inputPannel.style.display ='block';
 
 
 inputPannel.innerHTML =  `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
-                           <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
-                           if(!currentTime){
-                           timeSave.innerHTML =`last save: never`;
-                           }else{
-                            ` saved  :${currentTime}`
-                           }
-                           inputPassCard(inputPannel)//pannel input pass cards  
-                                 
+                       <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`; 
+
+
+if(!currentTime){
+   timeSave.innerHTML =`last save: never`;
+}else{
+` saved  :${currentTime}`
+}
+
+inputPassCard(inputPannel)//pannel input pass cards 
+ addTrashBtn.addEventListener('click',add_trash); 
+                                
 };
 
 //inputs pass to selected card
@@ -149,23 +165,21 @@ function create_cards_models({
    content = "No content",
     dateData
 })
-  {
-
-
-    let card = document.createElement('div');
-     if(id) card.id = id
- 
-card.className = className;
-card.innerHTML += `<div class = "note_flex">
+      {
+          let card = document.createElement('div');
+          if(id) card.id = id;
+              card.className = className;
+              card.innerHTML += `<div class = "note_flex">
                    <div class = "text_container">
                    <h3 class = "note_card_title">${title}</h3>
                    <p class = "note_card_content">${content}</p>
                     </div>
                    <div id="date">${dateData} <div>
                    </div>`;
-    return card
- 
-  };
+        return card;
+      };
+
+
 
 // Set active card // 
  function setActiveCard(){
@@ -173,30 +187,27 @@ card.innerHTML += `<div class = "note_flex">
 currentCard.addEventListener('click', async (e)=> {
  noInputs.style.display = 'none';
  inputPannel.style.display = 'block'
+ const inputPannelTitile = noteWritePannel.querySelector('#note-write-tittle');
+  const inputPannelContent= noteWritePannel.querySelector('#note-write-content');
    currentCard = e.target;
-    // console.log(currentCard,"current card in  selected") 
-    //  inputPannel.style.display ='flex';
-
-
-
-  const inputPannelTitile = noteWritePannel.querySelector('#note-write-tittle');
+   
+  
   const title = currentCard.querySelector('.note_card_title').textContent;
 //  console.log(inputPannel,"inputPannel.value ")
   inputPannelTitile.value = title === 'Untitled Note' ? '' : title;//selecetd card title pass the pannel title
 
-
-  const inputPannelContent= noteWritePannel.querySelector('#note-write-content');
   const content = currentCard.querySelector('.note_card_content').textContent;
 //  console.log(inputPannel,"inputPannel.value ")
   inputPannelContent.value = content === 'No content' ? '' : content;//selecetd card title pass the pannel content
   
-  let timeGet = await getCookies(currentCard)
-//  let timeGet = JSON.parse(sessionStorage.getItem(`${currentCard.id}time`))
-  // console.log(timeGet,"timeGet")
+  let timeGet = await getCookiesTime(currentCard)
+
   timeSave.innerHTML = `saved : ${timeGet}` ||'Last saved : Never ';
 
 });
 };
+
+
 
 const saveAllNotesInCookie = async ()=>{
 // console.log(currentCard,"sfdsdf")
@@ -216,25 +227,14 @@ value: encodeURIComponent(JSON.stringify(cardData))
 
 
 }
- async function getCookies(card){
+ async function getCookiesTime(card){
 
   const cookie = await cookieStore.get(card.id);
 
 const data = JSON.parse(decodeURIComponent(cookie?.value));
 
 return data.timestamp;
-//   let cookies = await cookieStore.get({name:name})
-//    console.log(cookies.value,"cookies")
-//   let cookieTimeGet = cookies.value ;
-//  return cookieTimeGet;
-  // for(i=0; i<cookies.length ;i++){
 
-  //   let cookiesArray = cookies[i].value.trim();
-  //  console.log(cookiesArray,"cookies data")
-    
-  
-    
-  // }
 }
 
 
@@ -251,11 +251,9 @@ return data.timestamp;
 
  },0
 )
- let percentage = (totalSize/10000) * 100;
-
  
  if(cookieData.length != 0){
-  cookiesStorageCount.innerHTML =`${(totalSize / 1024).toFixed(2)}KB`;
+  cookiesStorageCount.innerHTML =`${(totalSize/ 1024).toFixed(2)}KB`;
    let  colorDiv = document.createElement('div');
   cookiesStorageGreen.appendChild(colorDiv);
 colorDiv.style.width = `${(totalSize / 1024).toFixed(2)}` +'%';
@@ -272,9 +270,80 @@ colorDiv.style.background=`green`;
 
 
 
+async function toggle_trash_note(){
+
+  await create_trash_cards();
+  currentCard = trashCardsList.firstElementChild//set trash cards selected to first
+  currentCard = trashCardsList;
+       const title = currentCard.querySelector('.note_card_title').textContent;
+      inputPannel.querySelector('#note-write-tittle').value = title === 'Untitled Note' ? '' : title;
+     
+};
+
+async function create_trash_cards(){ 
+    
+    data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
+  //  console.log(data,"currentTrashCard");
+
+  data.forEach(element => {
+
+  let cards = create_cards_models({
+    //create trash cards    
+  id :element.id,
+  className:"trash-card",
+  title:element.title,
+ dateData: element.dateData
+
+}) 
+trashCardsList.appendChild(cards);
+currentCard = cards;
+ setActiveCard() ;
+  
+ inputPannel.innerHTML =  `<input id ="note-write-tittle" class="input-text"> 
+                           <input id="note-write-content"  class="input-text">`; 
+                            
+  
+ 
+  });
+    
+     
 
 
 
+};
+
+
+
+//  add_trash() from create_note_Cards()
+async function add_trash(){
+  if (currentTime) {
+
+  trashData = {
+      id :  currentCard.id,
+      title : currentCard.querySelector('.note_card_title').textContent,
+      dateData : currentCard.querySelector('#date').textContent
+     }
+
+    
+    // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
+let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
+       newNote.push(trashData)
+      localStorage.setItem(`trash`,JSON.stringify(newNote));
+    
+     noNotes.style.display = 'none';
+      // active card is store;
+      
+   currentCard.remove();//active card in my-note is remove
+   noInputs.style.display = 'flex';
+   inputPannel.style.display = 'none';
+   currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
+
+  
+  
+  } else {
+    alert.error(" you try to add a empty note ! ")
+  }  
+};
 
 
 
