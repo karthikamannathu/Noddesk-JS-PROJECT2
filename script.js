@@ -12,7 +12,7 @@ const noteWritePannel = document.querySelector('.notes-write-pannel');
  const cookiesStorageCount = document.querySelector('#storage_count');
  const cookiesStorageGreen = document.querySelector('.greenbox');
  const addTrashBtn = document.querySelector('.bi-trash3');
-
+ const  trashCardsList = document.querySelector('#trash-cards-list');
  
 
  let dateTimeSave  = new Date();
@@ -211,6 +211,7 @@ currentCard.addEventListener('click', async (e)=> {
 
 const saveAllNotesInCookie = async ()=>{
 // console.log(currentCard,"sfdsdf")
+
 let card = currentCard
 let cardData = ({
 title: card.querySelector('.note_card_title').textContent,
@@ -230,36 +231,37 @@ value: encodeURIComponent(JSON.stringify(cardData))
  async function getCookiesTime(card){
 
   const cookie = await cookieStore.get(card.id);
-
-const data = JSON.parse(decodeURIComponent(cookie?.value));
+if(cookie){
+const data = JSON.parse(decodeURIComponent(cookie.value)); 
 
 return data.timestamp;
-
+}
 }
 
 
  async function cookiesflg(){
  let cookieData = await cookieStore.getAll()
- let data = cookieData.map(data =>{
-   let values= data.value.length
-  return values}
+ let totalSize= cookieData.reduce((acc,cookies) =>{
+       acc + cookies.value.length
+  },0
  )
 //  console.log(data)
- let totalSize = data.reduce((acc,cookie) =>{
-  
-  return acc + cookie
 
- },0
-)
- 
- if(cookieData.length != 0){
-  cookiesStorageCount.innerHTML =`${(totalSize/ 1024).toFixed(2)}KB`;
+let totalKB = totalSize / 1024;
+
+  cookiesStorageCount.innerHTML =`${(totalKB).toFixed(2)}KB`;
+
+  // clear old green bar
+     cookiesStorageGreen.innerHTML='';
    let  colorDiv = document.createElement('div');
   cookiesStorageGreen.appendChild(colorDiv);
-colorDiv.style.width = `${(totalSize / 1024).toFixed(2)}` +'%';
-colorDiv.style.background=`green`;
 
- };
+  let percentage = (totalKB/4)* 100;
+colorDiv.style.width = percentage +'%';
+colorDiv.style.background=`green`;
+colorDiv.style.height = 'auto'
+
+
  
 }
 
@@ -274,19 +276,20 @@ async function toggle_trash_note(){
 
   await create_trash_cards();
   currentCard = trashCardsList.firstElementChild//set trash cards selected to first
-  currentCard = trashCardsList;
+  
        const title = currentCard.querySelector('.note_card_title').textContent;
-      inputPannel.querySelector('#note-write-tittle').value = title === 'Untitled Note' ? '' : title;
-     
+       const content =  currentCard.querySelector('.note_card_content').textContent;
+      inputPannel.querySelector('#note-write-tittle').value = title === '' ? '' : title;
+      inputPannel.querySelector('#note-write-content').value = content === ''? '' : content;
 };
 
 async function create_trash_cards(){ 
     
-    data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
-  //  console.log(data,"currentTrashCard");
+     let data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
+   console.log(data.id,"currentTrashCard");
 
   data.forEach(element => {
-
+// console.log(element)
   let cards = create_cards_models({
     //create trash cards    
   id :element.id,
@@ -317,20 +320,23 @@ currentCard = cards;
 //  add_trash() from create_note_Cards()
 async function add_trash(){
   if (currentTime) {
-
+  await deleteCurrentCookie(currentCard.id)
   trashData = {
       id :  currentCard.id,
       title : currentCard.querySelector('.note_card_title').textContent,
+      content: currentCard.querySelector('.note_card_content').textContent,
       dateData : currentCard.querySelector('#date').textContent
      }
 
     
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
-let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
+let newNote = [JSON.parse(localStorage.getItem(`trash`))] || []
        newNote.push(trashData)
       localStorage.setItem(`trash`,JSON.stringify(newNote));
+      
     
-     noNotes.style.display = 'none';
+      
+    noCards.style.display = 'none';
       // active card is store;
       
    currentCard.remove();//active card in my-note is remove
@@ -348,7 +354,10 @@ let newNote = JSON.parse(localStorage.getItem(`trash`)) || []
 
 
 
-
+ async function deleteCurrentCookie(cardsData){
+  console.log(cardsData)
+  await cookieStore.delete(cardsData)
+ }
 
 
 
