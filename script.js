@@ -203,6 +203,7 @@ async function pannelUI() {
   const inputPannelContent = noteWritePannel.querySelector(
     "#note-write-content",
   );
+  console.log(currentCard)
  if (currentCard) {
    const title = currentCard.querySelector(".note_card_title").textContent ;
    //  console.log(inputPannel,"inputPannel.value ")
@@ -216,7 +217,10 @@ async function pannelUI() {
   
    timeSave.innerHTML = `saved : ${timeGet}` || "Last saved : Never ";
   
- } 
+ } else{
+   noInputs.style.display = "block";
+   inputPannel.style.display = "none";
+ }
  
  
   
