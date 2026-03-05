@@ -24,6 +24,11 @@ let clickCount = 0;
 let currentTime = null;
 let currentCard = null;
 
+
+// const cookies =  cookieStore.getAll() ;
+// cookies.forEach(cookie  => {
+//    cookieStore.delete(cookie.name)
+// });
 toggleBtnMyNoteActive()//defult set toggle MyNote button active
 
 
@@ -38,11 +43,8 @@ async function toggleBtnMyNoteActive(){
     toggleBtnTrash.classList.remove('active');
     toggleBtnTrash.classList.add('in-active');
      noteCardsLists.style.display ='block';
-    // CookieStore.clear();
-const cookies = await cookieStore.getAll();
-cookies.forEach(async cookie  => {
-  await cookieStore.delete(cookie.name)
-});
+     trashCardsList.style.display = 'none';
+     updateEmptyBlock();
 
     // add the notes
  addNotesBtn.addEventListener('click',addNewNotes);
@@ -58,6 +60,7 @@ cookies.forEach(async cookie  => {
 
 function toggleBtnTrashActive(){
   try {
+     
         toggleBtnMyNote.classList.remove('active');
         toggleBtnTrash.classList.add('active');
         toggleBtnTrash.classList.remove('in-active');
@@ -68,7 +71,8 @@ function toggleBtnTrashActive(){
         noInputs.style.display = 'none';
         trashCardsList.innerHTML = '';
         inputPannel.style.display ='none';
-        toggle_trash_note()
+        toggle_trash_note();
+        updateEmptyBlock();
         
   } catch (error) {
     console.log(error)
@@ -89,8 +93,7 @@ function addNewNotes() {
 
 // Notes Cards creations
 function create_note_Cards(){
- 
- noCards.style.display = 'none';//no-list-message-div disable
+   noCards.style.display = 'none';//no-list-message-div disable
    clickCount++;
 let card = create_cards_models({
   id :`card${clickCount}`,
@@ -122,7 +125,7 @@ if(!currentTime){
 
 inputPassCard(inputPannel)//pannel input pass cards 
  addTrashBtn.addEventListener('click',add_trash); 
-                                
+    currentCard = trashCardsList.firstElementChild;                             
 };
 
 //inputs pass to selected card
@@ -184,12 +187,19 @@ function create_cards_models({
 // Set active card // 
  function setActiveCard(){
  
-currentCard.addEventListener('click', async (e)=> {
+currentCard.addEventListener('click',(e) =>{
+currentCard = e.target;
+console.log(currentCard)
+pannelUI()
+});
+};
+
+async function pannelUI(){
+
  noInputs.style.display = 'none';
  inputPannel.style.display = 'block'
  const inputPannelTitile = noteWritePannel.querySelector('#note-write-tittle');
   const inputPannelContent= noteWritePannel.querySelector('#note-write-content');
-   currentCard = e.target;
    
   
   const title = currentCard.querySelector('.note_card_title').textContent;
@@ -204,10 +214,8 @@ currentCard.addEventListener('click', async (e)=> {
 
   timeSave.innerHTML = `saved : ${timeGet}` ||'Last saved : Never ';
 
-});
-};
 
-
+}
 
 const saveAllNotesInCookie = async ()=>{
 // console.log(currentCard,"sfdsdf")
@@ -239,16 +247,20 @@ return data.timestamp;
 }
 
 
+
+
+
  async function cookiesflg(){
  let cookieData = await cookieStore.getAll()
  let totalSize= cookieData.reduce((acc,cookies) =>{
-       acc + cookies.value.length
+
+      return  acc + cookies.value.length
   },0
  )
-//  console.log(data)
+ 
 
 let totalKB = totalSize / 1024;
-
+  
   cookiesStorageCount.innerHTML =`${(totalKB).toFixed(2)}KB`;
 
   // clear old green bar
@@ -275,18 +287,15 @@ colorDiv.style.height = 'auto'
 async function toggle_trash_note(){
 
   await create_trash_cards();
-  currentCard = trashCardsList.firstElementChild//set trash cards selected to first
-  
-       const title = currentCard.querySelector('.note_card_title').textContent;
-       const content =  currentCard.querySelector('.note_card_content').textContent;
-      inputPannel.querySelector('#note-write-tittle').value = title === '' ? '' : title;
-      inputPannel.querySelector('#note-write-content').value = content === ''? '' : content;
+   currentCard = trashCardsList.firstElementChild//set trash cards selected to first
+  pannelUI()
+     
 };
 
 async function create_trash_cards(){ 
     
      let data = JSON.parse(localStorage.getItem(`trash`)) || []//get the trash data
-   console.log(data.id,"currentTrashCard");
+   console.log(data,"currentTrashCard");
 
   data.forEach(element => {
 // console.log(element)
@@ -330,20 +339,30 @@ async function add_trash(){
 
     
     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
-let newNote = [JSON.parse(localStorage.getItem(`trash`))] || []
-       newNote.push(trashData)
-      localStorage.setItem(`trash`,JSON.stringify(newNote));
-      
+let existingTrash = JSON.parse(localStorage.getItem('trash'));
+
+// If it's not an array (null or an old object), initialize it as an empty array
+if (!Array.isArray(existingTrash)) {
+    existingTrash = [];
+}
+
+  // push the data // add data to same array
+existingTrash.push(trashData);
+
+// Save the full array back
+localStorage.setItem('trash', JSON.stringify(existingTrash));
+
     
       
     noCards.style.display = 'none';
-      // active card is store;
+      
       
    currentCard.remove();//active card in my-note is remove
    noInputs.style.display = 'flex';
    inputPannel.style.display = 'none';
-   currentCard = noteCardsLists.lastElementChild;   //assign , when the currentcard  is last created card
-
+   currentCard = '';
+   currentCard = noteCardsLists.firstElementChild;   //assign , when the currentcard  is last created card
+  pannelUI()
   
   
   } else {
@@ -362,7 +381,18 @@ let newNote = [JSON.parse(localStorage.getItem(`trash`))] || []
 
 
 
+function updateEmptyBlock(){
+  const isNoteCardsListEmpty = noteCardsLists.children.length === 0;
+  const isTrashCardListEmpty = trashCardsList.children.length === 0;
 
+  if(isNoteCardsListEmpty && isTrashCardListEmpty){
+    noCards.style.display = 'block';
+  } else{
+    noCards.style.display = 'none'
+
+  }
+
+}
 
 
 
