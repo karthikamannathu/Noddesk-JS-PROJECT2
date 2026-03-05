@@ -29,7 +29,7 @@ let currentCard = null;
 // start Parogaram
 
 toggleMyNoteDefult(); //defult set toggle MyNote button active
- 
+
  
 // toggle Buttons click Action
 toggleBtnMyNote.addEventListener("click", toggleBtnMyNoteActive);
@@ -45,7 +45,7 @@ async function toggleMyNoteDefult() {
     toggleBtnTrash.classList.add("in-active");
     noteCardsLists.style.display = "block";
     trashCardsList.style.display = "none";
-    
+      updateEmptyBlock(noteCardsLists);
     // add the notes
     addNotesBtn.addEventListener("click", addNewNotes);
   } catch (error) {
@@ -58,14 +58,12 @@ async function toggleMyNoteDefult() {
 //  Toggle buttons click event
 
 // myNote button 
- function toggleBtnMyNoteActive() {
+ async function toggleBtnMyNoteActive() {
 
   currentCard = noteCardsLists.firstElementChild; //set first note cards to selected 
 
-  updateEmptyBlock();
-  
-  toggleMyNoteDefult();
- 
+  await toggleMyNoteDefult();
+
    pannelUI();
 }
 
@@ -83,20 +81,23 @@ function toggleBtnTrashActive() {
     trashCardsList.innerHTML = "";
     inputPannel.style.display = "none";
     toggle_trash_note();
-    updateEmptyBlock();
+    updateEmptyBlock(trashCardsList);
   } catch (error) {
     console.log(error);
   }
 }
 
 function addNewNotes() {
+   
   create_note_write_pannel();
   create_note_Cards();
+   updateEmptyBlock(noteCardsLists);
 }
 
 // Notes Cards creations
 function create_note_Cards() {
-  noCards.style.display = "none"; //no-list-message-div disable
+
+
   clickCount++;
   let card = create_cards_models({
     id: `card${clickCount}`,
@@ -320,7 +321,7 @@ async function add_trash() {
     // Save the full array back
     localStorage.setItem("trash", JSON.stringify(existingTrash));
 
-    noCards.style.display = "none";
+    
 
     currentCard.remove(); //active card in my-note is remove
     noInputs.style.display = "flex";
@@ -338,16 +339,14 @@ async function deleteCurrentCookie(cardsData) {
   await cookieStore.delete(cardsData);
 }
 
-function updateEmptyBlock() {
-  const isNoteCardsListEmpty = noteCardsLists.children.length === 0;
-  const isTrashCardListEmpty = trashCardsList.children.length === 0;
+function updateEmptyBlock(cardList) {
+    const isNoteCardsListEmpty = cardList.children.length !== 0;
+  
+  
+  
+  noCards.style.display = isNoteCardsListEmpty ? 'none' : 'block';
 
-  if (isNoteCardsListEmpty || isTrashCardListEmpty) {
-    noCards.style.display= 'flex';
-    console.log(noCards)
-  } else {
-    noCards.style.display = "none";
-  }
+
 }
 
 // const cookies =  cookieStore.getAll() ;
