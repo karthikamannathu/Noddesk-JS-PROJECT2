@@ -12,6 +12,7 @@ const cookiesStorageCount = document.querySelector("#storage_count");
 const cookiesStorageGreen = document.querySelector(".greenbox");
 const addTrashBtn = document.querySelector(".bi-trash3");
 const trashCardsList = document.querySelector("#trash-cards-list");
+const icons = document.querySelector('.icon');
 
 // varibles in global
 let dateTimeSave = new Date();
@@ -73,7 +74,7 @@ function toggleBtnTrashActive() {
     toggleBtnMyNote.classList.remove("active");
     toggleBtnTrash.classList.add("active");
     toggleBtnTrash.classList.remove("in-active");
-
+    headSectionRight.style.display = "flex";
     noteCardsLists.style.display = "none";
     trashCardsList.style.display = "block";
 
@@ -82,6 +83,7 @@ function toggleBtnTrashActive() {
     inputPannel.style.display = "none";
     toggle_trash_note();
     updateEmptyBlock(trashCardsList);
+    icons.style.display = 'none'
   } catch (error) {
     console.log(error);
   }
@@ -89,7 +91,7 @@ function toggleBtnTrashActive() {
 
 function addNewNotes() {
    
-  create_note_write_pannel();
+  create_note_Input_pannel();
   create_note_Cards();
    updateEmptyBlock(noteCardsLists);
 }
@@ -111,7 +113,7 @@ function create_note_Cards() {
 }
 
 // inputs pannel create
-function create_note_write_pannel() {
+function create_note_Input_pannel() {
   headSectionRight.style.display = "flex";
   noInputs.style.display = "none";
   inputPannel.style.display = "block";
@@ -276,6 +278,8 @@ async function toggle_trash_note() {
   await create_trash_cards();
   currentCard = trashCardsList.firstElementChild; //set trash cards selected to first
   pannelUI();
+  headSectionRight.innerHTML = `<div><button class='restore btn'>Restore</button> <button class='delete btn'>Delete Forever</button></div>`
+
 }
 
 async function create_trash_cards() {
@@ -346,12 +350,14 @@ async function deleteCurrentCookie(cardsData) {
 function updateEmptyBlock(cardList) {
     const isNoteCardsListEmpty = cardList.children.length !== 0;
   
-  
-  
   noCards.style.display = isNoteCardsListEmpty ? 'none' : 'block';
 
-
 }
+
+
+
+
+// trash pannel setuup
 
 // const cookies =  cookieStore.getAll() ;
 // cookies.forEach(cookie  => {
