@@ -13,6 +13,9 @@ const cookiesStorageGreen = document.querySelector(".greenbox");
 const addTrashBtn = document.querySelector(".bi-trash3");
 const trashCardsList = document.querySelector("#trash-cards-list");
 const icons = document.querySelector('.icon');
+const headButton = document.querySelector('.btn_flex');
+const saveTime = document.querySelector('.save-time');
+
 
 // varibles in global
 let dateTimeSave = new Date();
@@ -37,18 +40,19 @@ toggleBtnMyNote.addEventListener("click", toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener("click", toggleBtnTrashActive);
 headSectionRight.style.display = "none";
 
+// add the notes
+    addNotesBtn.addEventListener("click", addNewNotes);
 
 
 async function toggleMyNoteDefult() {
   try {
+    toggleBtnTrash.classList.replace("active", "in-active");
     toggleBtnMyNote.classList.add("active");
-    toggleBtnTrash.classList.remove("active");
-    toggleBtnTrash.classList.add("in-active");
     noteCardsLists.style.display = "block";
     trashCardsList.style.display = "none";
+      headButton.style.display = 'none'
       updateEmptyBlock(noteCardsLists);
-    // add the notes
-    addNotesBtn.addEventListener("click", addNewNotes);
+    
   } catch (error) {
     console.log(error);
   }
@@ -60,24 +64,27 @@ async function toggleMyNoteDefult() {
 
 // myNote button 
  async function toggleBtnMyNoteActive() {
-
+try {
+  
   currentCard = noteCardsLists.firstElementChild; //set first note cards to selected 
-
+   
   await toggleMyNoteDefult();
 
    pannelUI();
+} catch (error) {
+  console.log(error)
+  }
 }
 
 
 function toggleBtnTrashActive() {
   try {
-    toggleBtnMyNote.classList.remove("active");
+      toggleBtnMyNote.classList.replace("active", "in-active");
     toggleBtnTrash.classList.add("active");
-    toggleBtnTrash.classList.remove("in-active");
     headSectionRight.style.display = "flex";
     noteCardsLists.style.display = "none";
     trashCardsList.style.display = "block";
-
+     headButton.style.display = 'flex'
     noInputs.style.display = "none";
     trashCardsList.innerHTML = "";
     inputPannel.style.display = "none";
@@ -90,16 +97,15 @@ function toggleBtnTrashActive() {
 }
 
 function addNewNotes() {
-   
+   headButton.style.display = 'none';
+
   create_note_Input_pannel();
   create_note_Cards();
    updateEmptyBlock(noteCardsLists);
 }
 
 // Notes Cards creations
-function create_note_Cards() {
-
-
+ function create_note_Cards() {
   clickCount++;
   let card = create_cards_models({
     id: `card${clickCount}`,
@@ -108,13 +114,16 @@ function create_note_Cards() {
   });
   noteCardsLists.appendChild(card);
   currentCard = card;
+  
+ setActiveCard();
+  icons.style.display ='flex';
 
-  setActiveCard();
 }
 
 // inputs pannel create
 function create_note_Input_pannel() {
   headSectionRight.style.display = "flex";
+ saveTime.style.display = "flex";
   noInputs.style.display = "none";
   inputPannel.style.display = "block";
 
@@ -202,14 +211,12 @@ async function pannelUI() {
   noInputs.style.display = "none";
   inputPannel.style.display = "block";
   const inputPannelTitile = noteWritePannel.querySelector("#note-write-tittle");
-  const inputPannelContent = noteWritePannel.querySelector(
-    "#note-write-content",
-  );
-  console.log(currentCard)
+  const inputPannelContent = noteWritePannel.querySelector("#note-write-content");
+  console.log(currentCard ,"current")
  if (currentCard) {
    const title = currentCard.querySelector(".note_card_title").textContent ;
-   //  console.log(inputPannel,"inputPannel.value ")
-   inputPannelTitile.value = title === "Untitled Note" ? "" : title; //selecetd card title pass the pannel title
+    console.log( inputPannelTitile.placeholder,"place")
+   inputPannelTitile.value = title !==  "Note Title" ? "" : title; //selecetd card title pass the pannel title
   
    const content = currentCard.querySelector(".note_card_content").textContent;
    //  console.log(inputPannel,"inputPannel.value ")
@@ -278,7 +285,7 @@ async function toggle_trash_note() {
   await create_trash_cards();
   currentCard = trashCardsList.firstElementChild; //set trash cards selected to first
   pannelUI();
-  headSectionRight.innerHTML = `<div><button class='restore btn'>Restore</button> <button class='delete btn'>Delete Forever</button></div>`
+ 
 
 }
 

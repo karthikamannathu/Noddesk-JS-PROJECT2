@@ -184,5 +184,15 @@ font-size: x-large;
     justify-content: space-around;
     width: 60px;
 }
+.save-time{
+    width: 150px;
+    
+}
 
+.btn_flex{
+background-color: blue;
+
+float: right;
+   
+}
 
