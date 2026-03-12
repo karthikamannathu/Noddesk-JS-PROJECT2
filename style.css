@@ -196,3 +196,8 @@ float: right;
    
 }
 
+.bi-pin{
+display: none;
+height: max-content;
+}
+

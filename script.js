@@ -11,10 +11,13 @@ const timeSave = document.querySelector(".save-time");
 const cookiesStorageCount = document.querySelector("#storage_count");
 const cookiesStorageGreen = document.querySelector(".greenbox");
 const addTrashBtn = document.querySelector(".bi-trash3");
+const addBookmarkBtn = document.querySelector('.bi-bookmark');
 const trashCardsList = document.querySelector("#trash-cards-list");
 const icons = document.querySelector('.icon');
 const headButton = document.querySelector('.btn_flex');
 const saveTime = document.querySelector('.save-time');
+const inputPannelTitile = noteWritePannel.querySelector("#note-write-tittle");
+const inputPannelContent = noteWritePannel.querySelector("#note-write-content");
 
 
 // varibles in global
@@ -29,29 +32,45 @@ let currentCard = null;
 
 
 
-
 // start Parogaram
 
-toggleMyNoteDefult(); //defult set toggle MyNote button active
-
+toggleMyNoteDefault(); //Toggle MyNote button Default fun call
+headSectionRight.style.display = "none";//Input pannel head section none
  
-// toggle Buttons click Action
+//  Events Actions
+
 toggleBtnMyNote.addEventListener("click", toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener("click", toggleBtnTrashActive);
-headSectionRight.style.display = "none";
+addNotesBtn.addEventListener("click", addNewNotes);// New note add  event
+addTrashBtn.addEventListener("click", add_trash);//Trash add event
+addBookmarkBtn.addEventListener("click",async(e) =>{
 
-// add the notes
-    addNotesBtn.addEventListener("click", addNewNotes);
+  e.target.style.background = "yellow";
+  let dateSelection = currentCard.querySelector('#date');
+  let dateDiv = currentCard.querySelector('.note_flex');
+//  console.log(pinIcon)
+  dateSelection.style.display = 'none';
+  dateDiv.innerHTML +=  `<i class="bi bi-pin"></i>`;
+ let pinIcon = dateDiv.querySelector('.bi-pin')
+  pinIcon.style.display = 'flex';
+  pinIcon.style.background = 'yellow';
+  
+  
+});//BookMark add event
 
 
-async function toggleMyNoteDefult() {
+    
+
+
+// Toggle mynote btn defult set function
+async function toggleMyNoteDefault() {
   try {
     toggleBtnTrash.classList.replace("active", "in-active");
     toggleBtnMyNote.classList.add("active");
     noteCardsLists.style.display = "block";
     trashCardsList.style.display = "none";
       headButton.style.display = 'none'
-      updateEmptyBlock(noteCardsLists);
+      updateEmptyBlock(noteCardsLists);//set empty cards section blocks 
     
   } catch (error) {
     console.log(error);
@@ -59,95 +78,123 @@ async function toggleMyNoteDefult() {
 }
 
 
-
-//  Toggle buttons click event
-
-// myNote button 
+// MyNote Toggle button event function
  async function toggleBtnMyNoteActive() {
 try {
   
-  currentCard = noteCardsLists.firstElementChild; //set first note cards to selected 
+  currentCard = noteCardsLists.firstElementChild; //set first note card to selected currentCard 
    
-  await toggleMyNoteDefult();
+  await toggleMyNoteDefault();
 
-   pannelUI();
+    // pannelUI();//Input pannel function call
+
 } catch (error) {
   console.log(error)
   }
 }
 
 
-function toggleBtnTrashActive() {
-  try {
-      toggleBtnMyNote.classList.replace("active", "in-active");
-    toggleBtnTrash.classList.add("active");
-    headSectionRight.style.display = "flex";
-    noteCardsLists.style.display = "none";
-    trashCardsList.style.display = "block";
-     headButton.style.display = 'flex'
-    noInputs.style.display = "none";
-    trashCardsList.innerHTML = "";
-    inputPannel.style.display = "none";
-    toggle_trash_note();
-    updateEmptyBlock(trashCardsList);
-    icons.style.display = 'none'
-  } catch (error) {
-    console.log(error);
+
+async function pannelUI(Card) {
+  if (Card) {
+  noInputs.style.display = "none";
+  inputPannel.style.display = "block";
+
+  const title = Card.querySelector(".note_card_title").textContent.trim();
+  console.log(title);
+
+  // Title
+  if (title === "Untitled Note") {
+    inputPannelTitile.value = '';
+    inputPannelTitile.placeholder = "Note Title";
+  } else {
+    inputPannelTitile.value = title;
   }
+
+  // Content
+  const content = Card.querySelector(".note_card_content").textContent.trim();
+
+  if (content === "No content") {
+    inputPannelContent.value = '';
+    inputPannelContent.placeholder = "Start typing..";
+  } else {
+    inputPannelContent.value = content; // ✅ fixed
+  }
+
+}else{
+   noInputs.style.display = "block";
+   inputPannel.style.display = "none";
+ }
 }
 
+
+
+// New note add
 function addNewNotes() {
-   headButton.style.display = 'none';
 
-  create_note_Input_pannel();
-  create_note_Cards();
-   updateEmptyBlock(noteCardsLists);
+ addBookmarkBtn.style.background = "none";
+Input_pannel();
+create_note_Cards();
+updateEmptyBlock(noteCardsLists);//update Empty block display none
+   
 }
+
 
 // Notes Cards creations
  function create_note_Cards() {
+
   clickCount++;
+
   let card = create_cards_models({
     id: `card${clickCount}`,
     className: "note-card",
     dateData,
   });
-  noteCardsLists.appendChild(card);
+
+  noteCardsLists.appendChild(card);//created card
   currentCard = card;
-  
- setActiveCard();
+  setActiveCard();//set selected card 
   icons.style.display ='flex';
 
 }
 
+
+
+// Set active card //
+function setActiveCard() {
+  currentCard.addEventListener("click", (e) => {
+    currentCard = e.target; 
+    pannelUI(currentCard)
+  });
+}
+
+
 // inputs pannel create
-function create_note_Input_pannel() {
+function Input_pannel() {
   headSectionRight.style.display = "flex";
  saveTime.style.display = "flex";
-  noInputs.style.display = "none";
-  inputPannel.style.display = "block";
-
-  inputPannel.innerHTML = `<input id ="note-write-tittle" placeholder = " Note Title" class="input-text"> 
-                          <input id="note-write-content" placeholder ="  Start typing.." class="input-text">`;
-
+  
   if (!currentTime) {
     timeSave.innerHTML = `last save: never`;
   } else {
     ` saved  :${currentTime}`;
   }
-
-  
-  addTrashBtn.addEventListener("click", add_trash);
-  currentCard = trashCardsList.firstElementChild;
+  currentCard = noteCardsLists.firstElementChild;
   inputPassCard(inputPannel); //pannel input pass cards
 }
+
 
 //inputs pass to selected card
 function inputPassCard(notePannel) {
 
-  let inputTitle = notePannel.querySelector("#note-write-tittle");
+  let  inputTitle = notePannel.querySelector("#note-write-tittle");
   let inputContent = notePannel.querySelector("#note-write-content");
-  
+
+  // clear previous passed  inputs
+    inputTitle.value = '';
+    inputContent.value = '';
+
+   
   // Title inputs pass
   inputTitle.addEventListener("input", (e) => handleInput(e, "title"));
   // content inputs pass
@@ -168,76 +215,23 @@ function inputPassCard(notePannel) {
         value || "No content"; //tilte input pass to card title
     }
   
-    await saveAllNotesInCookie();
+    await saveAllNotesInCookie(); //save All inputs notes in cookie
+
     cookiesflg();
+   
   };
 
+}// Mynote End
+
+function add_bookmark(e){
+  // let currentBookmarkIcon = event.target
+  console.log(e.target)
 }
 
-
-
-
-// creating  cards models for  trashs /notes cards
-function create_cards_models({
-  id,
-  className,
-  title = "Untitled Note",
-  content = "No content",
-  dateData,
-}) {
-  let card = document.createElement("div");
-  if (id) card.id = id;
-  card.className = className;
-  card.innerHTML += `<div class = "note_flex">
-                   <div class = "text_container">
-                   <h3 class = "note_card_title">${title}</h3>
-                   <p class = "note_card_content">${content}</p>
-                    </div>
-                   <div id="date">${dateData} <div>
-                   </div>`;
-  return card;
-}
-
-// Set active card //
-function setActiveCard() {
-  currentCard.addEventListener("click", (e) => {
-    currentCard = e.target;
-    console.log(currentCard);
-    pannelUI();
-  });
-}
-
-async function pannelUI() {
-  noInputs.style.display = "none";
-  inputPannel.style.display = "block";
-  const inputPannelTitile = noteWritePannel.querySelector("#note-write-tittle");
-  const inputPannelContent = noteWritePannel.querySelector("#note-write-content");
-  console.log(currentCard ,"current")
- if (currentCard) {
-   const title = currentCard.querySelector(".note_card_title").textContent ;
-    console.log( inputPannelTitile.placeholder,"place")
-   inputPannelTitile.value = title !==  "Note Title" ? "" : title; //selecetd card title pass the pannel title
-  
-   const content = currentCard.querySelector(".note_card_content").textContent;
-   //  console.log(inputPannel,"inputPannel.value ")
-   inputPannelContent.value = content === "No content" ? "" : content; //selecetd card title pass the pannel content
-  
-   let timeGet = await getCookiesTime(currentCard);
-  
-   timeSave.innerHTML = `saved : ${timeGet}` || "Last saved : Never ";
-  
- } else{
-   noInputs.style.display = "block";
-   inputPannel.style.display = "none";
- }
- 
- 
-  
- 
-}
+// set cookies
 
 const saveAllNotesInCookie = async () => {
-  // console.log(currentCard,"sfdsdf")
+ 
 
   let card = currentCard;
   let cardData = {
@@ -245,7 +239,7 @@ const saveAllNotesInCookie = async () => {
     content: card.querySelector(".note_card_content").textContent,
     timestamp: currentTime,
   };
-  // console.log(cardData)
+ 
   await cookieStore.set({
     name: card.id,
     value: encodeURIComponent(JSON.stringify(cardData)),
@@ -281,6 +275,37 @@ async function cookiesflg() {
   colorDiv.style.height = "auto";
 }
 
+
+
+
+
+
+
+// Trash start
+
+
+function toggleBtnTrashActive() {
+  try {
+      toggleBtnMyNote.classList.replace("active", "in-active");
+    toggleBtnTrash.classList.add("active");
+    headSectionRight.style.display = "flex";
+    noteCardsLists.style.display = "none";
+    trashCardsList.style.display = "block";
+     headButton.style.display = 'flex'
+    noInputs.style.display = "none";
+    trashCardsList.innerHTML = "";
+    inputPannel.style.display = "none";
+    toggle_trash_note();
+    updateEmptyBlock(trashCardsList);
+    icons.style.display = 'none'
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+
+
+
 async function toggle_trash_note() {
   await create_trash_cards();
   currentCard = trashCardsList.firstElementChild; //set trash cards selected to first
@@ -313,6 +338,7 @@ async function create_trash_cards() {
 
 //  add_trash() from create_note_Cards()
 async function add_trash() {
+ 
   if (currentTime) {
     await deleteCurrentCookie(currentCard.id);
     trashData = {
@@ -339,6 +365,7 @@ async function add_trash() {
     
 
     currentCard.remove(); //active card in my-note is remove
+     updateEmptyBlock(noteCardsLists)
     noInputs.style.display = "flex";
     inputPannel.style.display = "none";
     currentCard = "";
@@ -354,17 +381,48 @@ async function deleteCurrentCookie(cardsData) {
   await cookieStore.delete(cardsData);
 }
 
+
+
+
+
+
+// creating  cards models for  trashs /notes cards
+function create_cards_models({
+  id,
+  className,
+  title = "Untitled Note",
+  content = "No content",
+  dateData,
+}) {
+  let card = document.createElement("div");
+  if (id) card.id = id;
+  card.className = className;
+  card.innerHTML += `<div class = "note_flex">
+                   <div class = "text_container">
+                   <h3 class = "note_card_title">${title}</h3>
+                   <p class = "note_card_content">${content}</p>
+                    </div>
+                   <div id="date">${dateData} <div>
+                  
+                   </div>`;
+  return card;
+}
 function updateEmptyBlock(cardList) {
-    const isNoteCardsListEmpty = cardList.children.length !== 0;
-  
+    const isNoteCardsListEmpty = cardList.firstChild !== null;
   noCards.style.display = isNoteCardsListEmpty ? 'none' : 'block';
+  inputPannel.style.display = isNoteCardsListEmpty ? 'block' : 'none';
+  noInputs.style.display = isNoteCardsListEmpty ? 'none' : 'block';
+  headSectionRight.style.display = isNoteCardsListEmpty ? 'flex' : 'none';
 
 }
 
 
 
 
-// trash pannel setuup
+
+
+
+// 
 
 // const cookies =  cookieStore.getAll() ;
 // cookies.forEach(cookie  => {
