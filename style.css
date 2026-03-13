@@ -198,5 +198,9 @@ float: right;
 .bi-pin{
 display: none;
 height: max-content;
+background-color: yellow;
 }
 
+.active-bookmark{
+    background-color: yellow;
+}

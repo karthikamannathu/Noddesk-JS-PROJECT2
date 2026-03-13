@@ -18,6 +18,7 @@ const headButton = document.querySelector('.btn_flex');
 const saveTime = document.querySelector('.save-time');
 const inputPannelTitile = noteWritePannel.querySelector("#note-write-tittle");
 const inputPannelContent = noteWritePannel.querySelector("#note-write-content");
+const re_Store_Btn = document.querySelector('.restore') 
 
 
 // varibles in global
@@ -32,37 +33,25 @@ let currentCard = null;
 
 
 
-// start Parogaram
+// start Parogaram---------------------------------
 
 toggleMyNoteDefault(); //Toggle MyNote button Default fun call
 headSectionRight.style.display = "none";//Input pannel head section none
  
-//  Events Actions
+//  Events Actions//
 
 toggleBtnMyNote.addEventListener("click", toggleBtnMyNoteActive);
 toggleBtnTrash.addEventListener("click", toggleBtnTrashActive);
 addNotesBtn.addEventListener("click", addNewNotes);// New note add  event
 addTrashBtn.addEventListener("click", add_trash);//Trash add event
-addBookmarkBtn.addEventListener("click",async(e) =>{
-
-  e.target.style.background = "yellow";
-  let dateSelection = currentCard.querySelector('#date');
-  let dateDiv = currentCard.querySelector('.note_flex');
-//  console.log(pinIcon)
-  dateSelection.style.display = 'none';
-  dateDiv.innerHTML +=  `<i class="bi bi-pin"></i>`;
- let pinIcon = dateDiv.querySelector('.bi-pin')
-  pinIcon.style.display = 'flex';
-  pinIcon.style.background = 'yellow';
-  
-  
-});//BookMark add event
+addBookmarkBtn.addEventListener("click", add_Bookmark);
+re_Store_Btn.addEventListener("click",reStoreMyNote);
 
 
     
 
 
-// Toggle mynote btn defult set function
+// Toggle mynote btn defult set function  //
 async function toggleMyNoteDefault() {
   try {
     toggleBtnTrash.classList.replace("active", "in-active");
@@ -78,7 +67,7 @@ async function toggleMyNoteDefault() {
 }
 
 
-// MyNote Toggle button event function
+// MyNote Toggle button event function //
  async function toggleBtnMyNoteActive() {
 try {
   
@@ -97,39 +86,44 @@ try {
 
 async function pannelUI(Card) {
   if (Card) {
-  noInputs.style.display = "none";
-  inputPannel.style.display = "block";
+    noInputs.style.display = "none";
+    inputPannel.style.display = "block";
 
-  const title = Card.querySelector(".note_card_title").textContent.trim();
-  console.log(title);
+    // check if trash card
+    if (Card.classList.contains("trash-card")) {
+      headButton.style.display = "flex";
+    } else {
+      headButton.style.display = "none";
+    }
 
-  // Title
-  if (title === "Untitled Note") {
-    inputPannelTitile.value = '';
-    inputPannelTitile.placeholder = "Note Title";
+    const title = Card.querySelector(".note_card_title").textContent.trim();
+
+    // Title
+    if (title === "Untitled Note") {
+      inputPannelTitile.value = "";
+      inputPannelTitile.placeholder = "Note Title";
+    } else {
+      inputPannelTitile.value = title;
+    }
+
+    const content = Card.querySelector(".note_card_content").textContent.trim();
+
+    // Content
+    if (content === "No content") {
+      inputPannelContent.value = "";
+      inputPannelContent.placeholder = "Start typing..";
+    } else {
+      inputPannelContent.value = content;
+    }
+
   } else {
-    inputPannelTitile.value = title;
+    inputPannel.style.display = "none";
   }
-
-  // Content
-  const content = Card.querySelector(".note_card_content").textContent.trim();
-
-  if (content === "No content") {
-    inputPannelContent.value = '';
-    inputPannelContent.placeholder = "Start typing..";
-  } else {
-    inputPannelContent.value = content; // ✅ fixed
-  }
-
-}else{
- 
-   inputPannel.style.display = "none";
- }
 }
 
 
 
-// New note add
+// New note add ------------- //
 function addNewNotes() {
  headButton.style.display = 'none'
  addBookmarkBtn.style.background = "none";
@@ -140,7 +134,7 @@ updateEmptyBlock(noteCardsLists);//update Empty block display none
 }
 
 
-// Notes Cards creations
+// Notes Cards creations --------------//
  function create_note_Cards() {
 
   clickCount++;
@@ -155,18 +149,20 @@ updateEmptyBlock(noteCardsLists);//update Empty block display none
   currentCard = card;
    
   setActiveCard();//set selected card 
- 
 
 }
 
 
 
-// Set active card //
+// Set active card ------------------ //
 function setActiveCard() {
-  currentCard.addEventListener("click", (e) => {
-    currentCard = e.target; 
-    pannelUI(currentCard)
-  });
+ 
+currentCard.onclick = (e) => {
+  const card = e.currentTarget;
+  // console.log(card, "currentCard Active");
+  pannelUI(card);
+};
+
 }
 
 
@@ -229,7 +225,7 @@ function add_bookmark(e){
   console.log(e.target)
 }
 
-// set cookies
+//  cookies functions ----------------- //
 
 const saveAllNotesInCookie = async () => {
  
@@ -279,7 +275,7 @@ async function cookiesflg() {
 
 
 
-// Trash start
+// Trash start ----------------     ////
 
 
 function toggleBtnTrashActive() {
@@ -289,7 +285,7 @@ function toggleBtnTrashActive() {
     headSectionRight.style.display = "flex";
     noteCardsLists.style.display = "none";
     trashCardsList.style.display = "block";
-     headButton.style.display = 'flex'
+   
     noInputs.style.display = "none";
     trashCardsList.innerHTML = "";
     inputPannel.style.display = "none";
@@ -312,7 +308,7 @@ async function toggle_trash_note() {
 
 }
 
-async function create_trash_cards() {
+ function create_trash_cards() {
   let data = JSON.parse(localStorage.getItem(`trash`)) || []; //get the trash data
   console.log(data, "currentTrashCard");
 
@@ -323,16 +319,23 @@ async function create_trash_cards() {
       id: element.id,
       className: "trash-card",
       title: element.title,
+      content:element.content,
       dateData: element.dateData,
     });
     trashCardsList.appendChild(cards);
     currentCard = cards;
-    setActiveCard();
+    
+ setActiveCard();
+ 
+   if( setActiveCard()){
+   headButton.style.display = 'flex'
+   }
+    
     
   });
 }
 
-//  add_trash() from create_note_Cards()
+//  add_trash() from create_note_Cards() //
 async function add_trash() {
 
 
@@ -385,11 +388,13 @@ async function deleteCurrentCookie(cardsData) {
 }
 
 
+function reStoreMyNote() {
+  console.log(currentCard)
+}
 
 
 
-
-// creating  cards models for  trashs /notes cards
+// creating  cards models for  trashs /notes cards //////
 function create_cards_models({
   id,
   className,
@@ -411,7 +416,7 @@ function create_cards_models({
   return card;
 }
 function updateEmptyBlock(cardList) {
-  console.log(noInputs.style.display )
+  
     const isNoteCardsListEmpty = cardList.firstChild !== null;
   noCards.style.display = isNoteCardsListEmpty ? 'none' : 'block';
   inputPannel.style.display = isNoteCardsListEmpty ? 'block' : 'none';
@@ -420,10 +425,35 @@ function updateEmptyBlock(cardList) {
   icons.style.display =  isNoteCardsListEmpty ? 'flex' : 'none';
 }
 
+function add_Bookmark(e) {
+   if (e.currentTarget.style.background === "yellow") {
+  e.currentTarget.style.background = "";
+} else {
+  e.currentTarget.style.background = "yellow";
+}
+   currentCard.classList.toggle("pinned");
+
+  let dateSelection = currentCard.querySelector("#date");
+  let dateDiv = currentCard.querySelector(".note_flex");
+
+  let pinIcon = dateDiv.querySelector(".bi-pin");
+
+  if (!pinIcon) {
+    dateSelection.style.display = "none";
+
+    dateDiv.insertAdjacentHTML("beforeend", `<i class="bi bi-pin"></i>`);
+    pinIcon = dateDiv.querySelector(".bi-pin");
+
+    pinIcon.style.display = "flex";
+    
+  } else {
+    pinIcon.remove();
+    dateSelection.style.display = "block";
+  }
+}
 
 
-
-
+// reste the pannelUI setActive call
 
 
 // 
