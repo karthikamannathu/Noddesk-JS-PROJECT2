@@ -122,7 +122,7 @@ async function pannelUI(Card) {
   }
 
 }else{
-   noInputs.style.display = "block";
+  //  noInputs.style.display = "block";
    inputPannel.style.display = "none";
  }
 }
@@ -131,7 +131,7 @@ async function pannelUI(Card) {
 
 // New note add
 function addNewNotes() {
-
+ headButton.style.background = 'none'
  addBookmarkBtn.style.background = "none";
 Input_pannel();
 create_note_Cards();
@@ -153,8 +153,9 @@ updateEmptyBlock(noteCardsLists);//update Empty block display none
 
   noteCardsLists.appendChild(card);//created card
   currentCard = card;
+   
   setActiveCard();//set selected card 
-  icons.style.display ='flex';
+ 
 
 }
 
@@ -278,9 +279,6 @@ async function cookiesflg() {
 
 
 
-
-
-
 // Trash start
 
 
@@ -330,9 +328,9 @@ async function create_trash_cards() {
     trashCardsList.appendChild(cards);
     currentCard = cards;
     setActiveCard();
-
-    inputPannel.innerHTML = `<input id ="note-write-tittle" class="input-text"> 
-                           <input id="note-write-content"  class="input-text">`;
+    
+    // inputPannel.innerHTML = `<input id ="note-write-tittle" class="input-text"> 
+    //                        <input id="note-write-content"  class="input-text">`;
   });
 }
 
@@ -408,12 +406,13 @@ function create_cards_models({
   return card;
 }
 function updateEmptyBlock(cardList) {
+  console.log(noInputs.style.display )
     const isNoteCardsListEmpty = cardList.firstChild !== null;
   noCards.style.display = isNoteCardsListEmpty ? 'none' : 'block';
   inputPannel.style.display = isNoteCardsListEmpty ? 'block' : 'none';
   noInputs.style.display = isNoteCardsListEmpty ? 'none' : 'block';
   headSectionRight.style.display = isNoteCardsListEmpty ? 'flex' : 'none';
-
+  icons.style.display =  isNoteCardsListEmpty ? 'flex' : 'none';
 }
 
 
