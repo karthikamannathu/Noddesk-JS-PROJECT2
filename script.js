@@ -136,11 +136,8 @@ updateEmptyBlock(noteCardsLists);//update Empty block display none
 
 // Notes Cards creations --------------//
  function create_note_Cards() {
-
-  clickCount++;
-
   let card = create_cards_models({
-    id: `card${clickCount}`,
+    
     className: "note-card",
     dateData,
   });
@@ -159,7 +156,7 @@ function setActiveCard() {
  
 currentCard.onclick = (e) => {
   const card = e.currentTarget;
-  // console.log(card, "currentCard Active");
+   console.log(card, "currentCard Active");
   pannelUI(card);
 };
 
@@ -238,10 +235,11 @@ const saveAllNotesInCookie = async () => {
   };
  
   await cookieStore.set({
-    name: card.id,
+    name: currentTime,
     value: encodeURIComponent(JSON.stringify(cardData)),
   });
 };
+
 async function getCookiesTime(card) {
   const cookie = await cookieStore.get(card.id);
   if (cookie) {
@@ -249,7 +247,7 @@ async function getCookiesTime(card) {
 
     return data.timestamp;
   }
-}
+};
 
 async function cookiesflg() {
   let cookieData = await cookieStore.getAll();
@@ -270,7 +268,7 @@ async function cookiesflg() {
   colorDiv.style.width = percentage + "%";
   colorDiv.style.background = `green`;
   colorDiv.style.height = "auto";
-}
+};
 
 
 
@@ -343,20 +341,19 @@ let cardTitle = currentCard.querySelector(".note_card_title").textContent;
 let cardContent = currentCard.querySelector(".note_card_content").textContent
 console.log(cardContent !== 'No content' && cardTitle !== "Untitled Note" )
  if (cardContent !== 'No content' && cardTitle !== "Untitled Note"){
-     await deleteCurrentCookie(currentCard.id);
+   clickCount++;
+     await deleteCurrentCookie(currentCard);
      trashData = {
-       id: currentCard.id,
+       id:  `card${clickCount}`,
        title: cardTitle, 
        content:cardContent ,
        dateData: currentCard.querySelector("#date").textContent,
      };
  
-     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
-     let existingTrash = JSON.parse(localStorage.getItem("trash"));
- 
-     // If it's not an array (null or an old object), initialize it as an empty array
-     if (!Array.isArray(existingTrash)) {
-       existingTrash = [];
+     try {
+       let existingTrash = await JSON.parse(localStorage.getItem("trash"));
+        if (!Array.isArray(existingTrash)) {
+       existingTrash = [];//add new trash card then existingTarsh   will assign  empty array
      }
  
      // push the data // add data to same array
@@ -366,6 +363,13 @@ console.log(cardContent !== 'No content' && cardTitle !== "Untitled Note" )
      localStorage.setItem("trash", JSON.stringify(existingTrash));
  
      
+      
+     } catch (error) {
+      console.log(error)
+     }
+ 
+     // If it's not an array (null or an old object), initialize it as an empty array
+    
  
      currentCard.remove(); //active card in my-note is remove
       updateEmptyBlock(noteCardsLists)
@@ -383,7 +387,7 @@ console.log(cardContent !== 'No content' && cardTitle !== "Untitled Note" )
  }
 
 async function deleteCurrentCookie(cardsData) {
-  console.log(cardsData);
+  console.log(cardsData,'cards data');
   await cookieStore.delete(cardsData);
 }
 
