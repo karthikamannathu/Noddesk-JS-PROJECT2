@@ -225,19 +225,30 @@ function add_bookmark(e){
 //  cookies functions ----------------- //
 
 const saveAllNotesInCookie = async () => {
- 
 
   let card = currentCard;
+
   let cardData = {
     title: card.querySelector(".note_card_title").textContent,
     content: card.querySelector(".note_card_content").textContent,
     timestamp: currentTime,
   };
- 
+
+  let existingCookie = await cookieStore.get("notes");
+
+  let notes = [];
+
+  if (existingCookie) {
+    notes = JSON.parse(atob(existingCookie.value));
+  }
+
+  notes.push(cardData);
+
   await cookieStore.set({
-    name: currentTime,
-    value: encodeURIComponent(JSON.stringify(cardData)),
+    name: "notes",
+    value: btoa(JSON.stringify(notes))
   });
+
 };
 
 async function getCookiesTime(card) {
@@ -249,26 +260,64 @@ async function getCookiesTime(card) {
   }
 };
 
+
+
+
+// async function getCookiesSize() {
+
+//   let cookies = await cookieStore.getAll();
+
+//   let totalSize = 0;
+
+//   cookies.forEach(c => {
+//     let totalSize = JSON.parse(decodeURIComponent(c.value)).length
+//      return totalSize;
+//     // totalSize += new TextEncoder().encode(c.value).length;
+//   });
+
+//   // bytes
+// }
 async function cookiesflg() {
-  let cookieData = await cookieStore.getAll();
-  let totalSize = cookieData.reduce((acc, cookies) => {
-    return acc + cookies.value.length;
-  }, 0);
+let cookie = await cookieStore.get("notes");
 
-  let totalKB = totalSize / 1024;
+let size = 0;
 
-  cookiesStorageCount.innerHTML = `${totalKB.toFixed(2)}KB`;
+if (cookie) {
+  let decoded = JSON.parse(atob(cookie.value));
+  size = new TextEncoder().encode(decoded).length;
+  let sizeKB = (size / 1024).toFixed(2)
+   cookiesStorageCount.innerHTML = sizeKB
 
   // clear old green bar
   cookiesStorageGreen.innerHTML = "";
+
   let colorDiv = document.createElement("div");
   cookiesStorageGreen.appendChild(colorDiv);
 
-  let percentage = (totalKB / 4) * 100;
+  // cookie max ≈ 4KB
+  let percentage = (sizeKB / 4) * 100;
+
   colorDiv.style.width = percentage + "%";
-  colorDiv.style.background = `green`;
-  colorDiv.style.height = "auto";
-};
+  colorDiv.style.background = "green";
+  colorDiv.style.height = "100%";
+}
+
+console.log((size / 1024).toFixed(2));
+// if (cookie) {
+//   let notes = JSON.parse(decodeURIComponent(cookie.value));
+//   totalSize = notes.length;
+// }
+//   let sizeKB = (totalSize /1024)
+// console.log((sizeKB).toFixed(2) )
+  // cookies.forEach(c => {
+  //   let cookieString = `${c.name}=${c.value}`;
+  //   totalSize += new TextEncoder().encode(cookieString).length;
+  // });
+
+  // let totalKB = totalSize / 1024;
+
+ 
+}
 
 
 
