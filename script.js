@@ -122,7 +122,7 @@ async function pannelUI(Card) {
   }
 
 }else{
-  //  noInputs.style.display = "block";
+ 
    inputPannel.style.display = "none";
  }
 }
@@ -329,51 +329,60 @@ async function create_trash_cards() {
     currentCard = cards;
     setActiveCard();
     
-    // inputPannel.innerHTML = `<input id ="note-write-tittle" class="input-text"> 
-    //                        <input id="note-write-content"  class="input-text">`;
   });
 }
 
 //  add_trash() from create_note_Cards()
 async function add_trash() {
+ try {
+
+let cardTitle = currentCard.querySelector(".note_card_title").textContent;
+let cardContent = currentCard.querySelector(".note_card_content").textContent
+console.log(cardContent && cardTitle != null)
+if (cardContent& cardTitle != null){
+  
+     await deleteCurrentCookie(currentCard.id);
+     trashData = {
+       id: currentCard.id,
+       title: cardTitle, 
+       content:cardContent ,
+       dateData: currentCard.querySelector("#date").textContent,
+     };
  
-  if (currentTime) {
-    await deleteCurrentCookie(currentCard.id);
-    trashData = {
-      id: currentCard.id,
-      title: currentCard.querySelector(".note_card_title").textContent,
-      content: currentCard.querySelector(".note_card_content").textContent,
-      dateData: currentCard.querySelector("#date").textContent,
-    };
+     // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
+     let existingTrash = JSON.parse(localStorage.getItem("trash"));
+ 
+     // If it's not an array (null or an old object), initialize it as an empty array
+     if (!Array.isArray(existingTrash)) {
+       existingTrash = [];
+     }
+ 
+     // push the data // add data to same array
+     existingTrash.push(trashData);
+ 
+     // Save the full array back
+     localStorage.setItem("trash", JSON.stringify(existingTrash));
+ 
+     
+ 
+     currentCard.remove(); //active card in my-note is remove
+      updateEmptyBlock(noteCardsLists)
+     noInputs.style.display = "flex";
+     inputPannel.style.display = "none";
+     currentCard = "";
+     currentCard = noteCardsLists.firstElementChild; //assign , when the currentcard  is last created card
+     pannelUI();
+   } else {
+     alert.error (" you try to add a empty note ! ");
+   }
 
-    // console.log(currentTrashCard.querySelector('.note_card_title').textContent);
-    let existingTrash = JSON.parse(localStorage.getItem("trash"));
-
-    // If it's not an array (null or an old object), initialize it as an empty array
-    if (!Array.isArray(existingTrash)) {
-      existingTrash = [];
-    }
-
-    // push the data // add data to same array
-    existingTrash.push(trashData);
-
-    // Save the full array back
-    localStorage.setItem("trash", JSON.stringify(existingTrash));
-
-    
-
-    currentCard.remove(); //active card in my-note is remove
-     updateEmptyBlock(noteCardsLists)
-    noInputs.style.display = "flex";
-    inputPannel.style.display = "none";
-    currentCard = "";
-    currentCard = noteCardsLists.firstElementChild; //assign , when the currentcard  is last created card
-    pannelUI();
-  } else {
-    alert.error(" you try to add a empty note ! ");
-  }
 }
 
+
+  catch (error) {
+  console.log(error)
+ }
+}
 async function deleteCurrentCookie(cardsData) {
   console.log(cardsData);
   await cookieStore.delete(cardsData);
