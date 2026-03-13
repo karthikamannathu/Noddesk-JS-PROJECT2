@@ -131,7 +131,7 @@ async function pannelUI(Card) {
 
 // New note add
 function addNewNotes() {
- headButton.style.background = 'none'
+ headButton.style.display = 'none'
  addBookmarkBtn.style.background = "none";
 Input_pannel();
 create_note_Cards();
@@ -334,13 +334,12 @@ async function create_trash_cards() {
 
 //  add_trash() from create_note_Cards()
 async function add_trash() {
- try {
+
 
 let cardTitle = currentCard.querySelector(".note_card_title").textContent;
 let cardContent = currentCard.querySelector(".note_card_content").textContent
-console.log(cardContent && cardTitle != null)
-if (cardContent& cardTitle != null){
-  
+console.log(cardContent !== 'No content' && cardTitle !== "Untitled Note" )
+ if (cardContent !== 'No content' && cardTitle !== "Untitled Note"){
      await deleteCurrentCookie(currentCard.id);
      trashData = {
        id: currentCard.id,
@@ -372,17 +371,14 @@ if (cardContent& cardTitle != null){
      currentCard = "";
      currentCard = noteCardsLists.firstElementChild; //assign , when the currentcard  is last created card
      pannelUI();
-   } else {
-     alert.error (" you try to add a empty note ! ");
    }
-
-}
-
-
-  catch (error) {
-  console.log(error)
+  
+  else  {
+  alert("You try to add an empty note!");
  }
-}
+ 
+ }
+
 async function deleteCurrentCookie(cardsData) {
   console.log(cardsData);
   await cookieStore.delete(cardsData);
