@@ -88,7 +88,7 @@ async function pannelUI(Card) {
   if (Card) {
     noInputs.style.display = "none";
     inputPannel.style.display = "block";
-
+console.log(Card)
     // check if trash card
     if (Card.classList.contains("trash-card")) {
       headButton.style.display = "flex";
@@ -156,7 +156,6 @@ function setActiveCard() {
  
 currentCard.onclick = (e) => {
   const card = e.currentTarget;
-   console.log(card, "currentCard Active");
   pannelUI(card);
 };
 
@@ -252,7 +251,7 @@ const saveAllNotesInCookie = async () => {
 };
 
 async function getCookiesTime(card) {
-  const cookie = await cookieStore.get(card.id);
+  const cookie = await cookieStore.get(card);
   if (cookie) {
     const data = JSON.parse(decodeURIComponent(cookie.value));
 
