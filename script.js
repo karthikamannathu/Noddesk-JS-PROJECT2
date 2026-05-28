@@ -98,7 +98,6 @@ function addNewNotes() {
  addBookmarkBtn.style.background = "none";
 Input_pannel();
 updateEmptyBlock(noteCardsLists);//update Empty block display none
-
    
 }
 
@@ -114,7 +113,7 @@ function Input_pannel() {
   } else {
     ` saved  :${currentTime}`;
   }
-  currentCard = noteCardsLists.firstElementChild;
+  // currentCard = noteCardsLists.firstElementChild;
   inputPassCard(inputPannel); //pannel input pass cards
 }
 
@@ -164,16 +163,17 @@ async function inputPassCard(notePannel) {
  saveTitle = currentCard.querySelector(".note_card_title").textContent ;
  saveContent = currentCard.querySelector(".note_card_content").textContent;
  saveDate = dateData;
- savedTime = currentTime;
+ 
 
-    noteData ={
+    noteData = await {
       id:Date.now(),
     t:saveTitle,
     c:saveContent,
-    ts:savedTime,
+    ts:currentTime,
     d:0,
     b:0
   }
+
    // await saveAllNotesInCookie(); //save All inputs notes in cookie
 
     // cookiesflg();
@@ -181,40 +181,32 @@ async function inputPassCard(notePannel) {
     //  notesDatasSaveCookie(noteData)
    
   };
-  create_note_Cards(); 
-  
- 
+
+create_note_Cards(); 
+ notesDatasSaveCookie(noteData);
+
 }
 
 async function notesDatasSaveCookie(note){
  
 // console.log(note.d)
-let existingCookie = await cookieStore.get("notes");
 
-   let notes = [];
 
-  if (existingCookie) {
-       notes = JSON.parse(atob(existingCookie.value));
-         if (!Array.isArray(notes)) {
-      notes = [];
-    }
-  }
-let noteIndex = notes.findIndex(n => n.id === note.id);
+  let existingCookie = await cookieStore.get("notes");
 
-  if (noteIndex !== -1) {
+if(existingCookie){
 
-    notes[noteIndex] = note;
+  let notes = JSON.parse(atob(existingCookie.value));
 
-  } else {
+  console.log(notes);
 
-    notes.push(note);
+    //  console.log(note)
 
   }
-
 
   await cookieStore.set({
     name:"notes",
-    value:btoa(JSON.stringify(notes)),
+    value:btoa(JSON.stringify(note)),
     expires:new Date(Date.now()+1000*60*60*24*7)
   });
   console.log("cookie saved")
@@ -232,8 +224,8 @@ let noteIndex = notes.findIndex(n => n.id === note.id);
 
   noteCardsLists.appendChild(card);//created card
   currentCard = card;
-    
-  // console.log(noteDataSave,"noteData......")
+  
+  
   setActiveCard();//set selected card 
 }
 
@@ -263,11 +255,9 @@ function create_cards_models({
 
 // 3.2. Set active card ------------------ //
 function setActiveCard() {
-currentCard.onclick = (e) => {
- 
-  const card = e.currentTarget;
-   console.log(currentCard)
-  pannelUI(card);
+currentCard.onclick = (e) => { 
+  currentCard = e.target
+  pannelUI(currentCard);
 };
 };
 
@@ -306,6 +296,7 @@ async function pannelUI(Card) {
   } else {
     inputPannel.style.display = "none";
   }
+  
 }
 
 
@@ -313,8 +304,9 @@ async function pannelUI(Card) {
 
 // Mynote End
 
-function add_trash(){
-noteData.d=1;
+async function add_trash(){
+noteData.d= await 1;
+
 // console.log(noteData)
 
 }
