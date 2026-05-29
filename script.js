@@ -92,9 +92,9 @@ currentCard.addEventListener('click',(e)=>{
 };
 
 function currentCardPannelView(card){
-  inputTextCondiner.querySelector('#note-write-tittle').textContent =""
- inputTextCondiner.querySelector('#note-write-tittle').textContent = card.querySelector("#card_title").textContent.trim() 
-console.log(inputTextCondiner.querySelector('#note-write-tittle').textContent)
+ let cardTitle = card.querySelector("#card_title").textContent.trim() 
+ let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
+  inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
 
 }
    add_trash.addEventListener('click',()=>{
