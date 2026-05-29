@@ -94,21 +94,30 @@ background-color: white;
    
 };
 
-
-.note_cards{
-   cursor: pointer;
+.card_flex{
+    display: flex;
+    flex-direction:column;
     margin: 20px;
    padding: 5px;
    width: auto;
-   height: 100px;
-   
+   gap:20px;
+   height: auto;
+   margin-bottom: 5px;
 }
 
-.note_card_title{
+.card_text{
+cursor: pointer;
+width: 200px;
+height: 40px;
+border-left: solid  #000;
+}
+
+#card_title{
 pointer-events: none;
 }
 
-.note_card_content{
+#card_content{
+    font-size: small;
 pointer-events: none;
 }
 
