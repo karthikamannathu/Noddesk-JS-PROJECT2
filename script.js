@@ -5,6 +5,7 @@ let inputPannel = document.querySelector(".notes-write-pannel");
 let inputTextCondiner = document.querySelector(".input-condiner");
 let noteCardListContainer = document.querySelector("#note-cards-list");
 let add_trash = document.querySelector(".bi-trash3");
+
   let currentTime = null;
 
 allNoteData= {};
@@ -92,14 +93,15 @@ inputPannel.addEventListener('input',(e) =>{
 });
 
 function setActiveCard(){
-currentCard.addEventListener('click',(e)=>{
+currentCard.addEventListener('click',async(e)=>{
   noteData.id = e.target.id;
   currentCardPannelView(e.target);
   console.log(e.target.id);
-  getTime(e.target.id)
-
-  // console.log(noteData)
-  // cookiesSet(n)
+ let  getTime = await getObject(e.target.id,'ts');
+  inputPannel.querySelector('#timeView').textContent = null;
+if(getTime == null){
+    inputPannel.querySelector('#timeView').textContent= `Last Time saved:${currentTime}`; 
+}else  inputPannel.querySelector('#timeView').textContent = `Time saved:${getTime}`;
 });
 };
 
@@ -114,7 +116,10 @@ function currentCardPannelView(card){
     
 }
    add_trash.addEventListener('click',()=>{
-   noteData.d = 1;console.log(noteData.d)
+ let cardId= currentCard.querySelector(".card_text").id
+ noteData.id = cardId;
+ noteData.d = 1;
+ cookiesSet(noteData);
   })
 
   async function cookiesSet(notesData) {
@@ -123,7 +128,7 @@ function currentCardPannelView(card){
     let note = [];
     if(exisitingCookie){
        let note = JSON.parse(atob(exisitingCookie.value));
-       console.log("notes",exisitingCookie)
+       console.log("notes",notesData)
        note.t = notesData.t;
        note.c = notesData.c;
        note.ts = notesData.ts;
@@ -147,12 +152,15 @@ function currentCardPannelView(card){
    }
   }
 
- let getTime = async function cookieTime(id) {
+ let getObject = async function cookieObject(id,obt) {
   const exisitingCookie = await cookieStore.get(id);
     let note = [];
+   try {
     if(exisitingCookie){
        let note = JSON.parse(atob(exisitingCookie.value));
-       inputPannel.querySelector('#timeView').textContent= `Time saved:${note.ts}`}
-      else {`Last Time saved:${currentTime}`} ;
-      }
- 
+       return note[obt];}
+        else return null;
+   } catch (error) {
+    }
+  }
+// twomarrow tras update check
