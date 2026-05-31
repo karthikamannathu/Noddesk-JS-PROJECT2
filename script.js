@@ -5,6 +5,11 @@ let inputPannel = document.querySelector(".notes-write-pannel");
 let inputTextCondiner = document.querySelector(".input-condiner");
 let noteCardListContainer = document.querySelector("#note-cards-list");
 let add_trash = document.querySelector(".bi-trash3");
+let noteList = document.querySelector("#note-cards-list");
+let trashList = document.querySelector("#trash-cards-list");
+let toggleMyNotes = document.querySelector("#btn-notes");
+let toggleMyTrash = document.querySelector("#btn-trash");
+
 
   let currentTime = null;
 
@@ -15,13 +20,24 @@ let content = null;
 let dte 
 let noteData;
 addNoteBtn.addEventListener("click",addNewNote);
-
+toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
+toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)});
+ toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
 function NotVisible(element){
 element.style.display = "none";
 }
 
 function vissible(element){
   element.style.display = "block";
+}
+
+function toggleViews(activeToggle,inActiveToggle,activeCardList,inActiveCardList){
+activeToggle.classList.remove('in-active');
+activeToggle.classList.add('active');
+inActiveToggle.classList.remove('active');
+inActiveToggle.classList.add('in-active');
+vissible(activeCardList);
+NotVisible(inActiveCardList);
 }
 
 async function addNewNote() {
