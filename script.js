@@ -20,6 +20,7 @@ addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
 toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)});
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
+ getTrashNote();
 function NotVisible(element){
 element.style.display = "none";
 }
@@ -134,12 +135,12 @@ function currentCardPannelView(card){
 
 add_trash.addEventListener('click',async()=>{
   try{ 
-  let card = currentCard
- let cardId = card.querySelector(".card_text").id
- noteData.id = cardId;
+ let cardId =currentCard.id
+ noteData.id === cardId;
  noteData.d = 1;
  cookiesSet(noteData);
  currentCard = noteList.lastElementChild;
+ currentCard.remove()
  currentCardPannelView(currentCard);
 }
  catch(err){
@@ -187,8 +188,24 @@ console.log(err)
     }
   }
 
+  async function getTrashNote(){
+    try {
+      let getAllCookies = [] 
+      getAllCookies = await cookieStore.getAll();
+        if(getAllCookies){
+       let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
+        
+       let deleteNoteData = data.filter(data=>data.d===1)
+      console.log(deleteNoteData)
+       return note[obt];}
+        else return null;
+   } catch (error) {
+    }
+  }
 
- function createcardsModel(){
+
+
+ let createdCard = function createcardsModel(){
 
   }
   // set active card is cureent card and set trash cards
