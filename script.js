@@ -3,17 +3,14 @@ let noInput = document.querySelector(".placeholder");
 let nocards =document.querySelector(".no-notes")
 let inputPannel = document.querySelector(".notes-write-pannel");
 let inputTextCondiner = document.querySelector(".input-condiner");
-let noteCardListContainer = document.querySelector("#note-cards-list");
 let add_trash = document.querySelector(".bi-trash3");
 let noteList = document.querySelector("#note-cards-list");
 let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
 let toggleMyTrash = document.querySelector("#btn-trash");
 
-
   let currentTime = null;
-
-
+let trashCard = null;
 let currentCard = null
 let title = null;
 let content = null;
@@ -70,9 +67,8 @@ async function createCards(){
    <h1 id="card_title">Untitled Note</h2>
     <samp id="card_content">No Content</samp></div>
     <div id="card_date"></div>`
-  await noteCardListContainer.appendChild(card);
+  await noteList.appendChild(card);
   currentCard = card;
- setActiveCard()
  createInputPannel();
 //  console.log(dte,"create card")
 }
@@ -108,17 +104,20 @@ inputPannel.addEventListener('input',(e) =>{
  } 
 });
 
-function setActiveCard(){
-currentCard.addEventListener('click',async(e)=>{
+noteList.addEventListener('click',setActiveCard);
+trashList.addEventListener('click',setActiveCard);
+
+
+async function setActiveCard(e){
+  console.log(e.target,"cardsss")
+  currentCard = e.target;
   noteData.id = e.target.id;
   currentCardPannelView(e.target);
-console.log(currentCard);
  let  getTime = await getObject(e.target.id,'ts');
   inputPannel.querySelector('#timeView').textContent = null;
 if(getTime == null){
     inputPannel.querySelector('#timeView').textContent= `Last Time saved:${currentTime}`; 
 }else  inputPannel.querySelector('#timeView').textContent = `Time saved:${getTime}`;
-});
 };
 
 function currentCardPannelView(card){
@@ -133,15 +132,19 @@ function currentCardPannelView(card){
     
 }
 
-add_trash.addEventListener('click',()=>{
-  // console.log(currentCard.querySelector("#card_title").textContent.trim())
- let cardId = currentCard.querySelector(".card_text").id
+add_trash.addEventListener('click',async()=>{
+  try{ 
+  let card = currentCard
+ let cardId = card.querySelector(".card_text").id
  noteData.id = cardId;
  noteData.d = 1;
  cookiesSet(noteData);
- currentCard.remove()
- currentCard = noteCardListContainer.lastElementChild;
- currentCardPannelView(currentCard)
+ currentCard = noteList.lastElementChild;
+ currentCardPannelView(currentCard);
+}
+ catch(err){
+console.log(err)
+ }
   })
 
   async function cookiesSet(notesData) {
@@ -188,5 +191,5 @@ add_trash.addEventListener('click',()=>{
  function createcardsModel(){
 
   }
-  
+  // set active card is cureent card and set trash cards
 // twomarrow tras update check
