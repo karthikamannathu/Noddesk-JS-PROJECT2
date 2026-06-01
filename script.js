@@ -16,7 +16,7 @@ let title = null;
 let content = null;
 let dte 
 let noteData={};
-
+let allListItems = []
 
 addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
@@ -43,7 +43,7 @@ if(activeCardList.firstElementChild != null){
  NotVisible(nocards); 
 }else vissible(nocards)
 }
-
+ 
 async function addNewNote() {
  NotVisible(noInput)
   createCards()
@@ -67,10 +67,7 @@ inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
 async function createCards(){
    NotVisible(nocards);
   dte = Date.now();
-  let card = await createcardsModel({dte,
-title:"Untitled Note",
-content:"No Content",
-  })
+  let card = await createcardsModel({dte })
   console.log(card)
   await noteList.appendChild(card);
   currentCard = card;
@@ -93,8 +90,8 @@ inputPannel.addEventListener('input',(e) =>{
 
  noteData =  {
   id:dte,
-  t:title,
-  c:content,
+  t:title? "" : "Untitled Note",
+  c:content? "" : "No Content",
   ts:currentTime,
   d:0,
   b:0
@@ -201,7 +198,8 @@ console.log(err)
         
        let deleteNoteData = data.filter(data=>data.d===1)
       // console.log()
-       let trash = deleteNoteData.forEach(async(el)=>{let trashcreate = await createcardsModel({dte:el.id, title:el.t, content:el.c})
+       let trash = deleteNoteData.forEach(async(el)=>{let trashcreate = await createcardsModel({
+        dte:el.id,title:el.t,content:el.c})
       console.log(trashcreate);
      trashList.appendChild(trashcreate)})
      console.log(trash)
@@ -213,8 +211,8 @@ console.log(err)
 
 function createcardsModel({
     dte,
-    title,
-    content,
+    title = "Untitled Note",
+   content = "No Content",
     time}){
  let card =  document.createElement('div');
   card.className = "card_flex flex-box";
@@ -225,5 +223,7 @@ function createcardsModel({
     <div id="card_date"></div>`
     return card
   }
-  // set active card is cureent card and set trash cards
+
+
+  //  card is date,and save note card ,create card add object show date
 // twomarrow tras update check
