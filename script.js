@@ -13,12 +13,12 @@ let toggleMyTrash = document.querySelector("#btn-trash");
 
   let currentTime = null;
 
-allNoteData= {};
+
 let currentCard = null
 let title = null;
 let content = null;
 let dte 
-let noteData;
+let noteData={};
 addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
 toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)});
@@ -55,8 +55,8 @@ inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
        inputPannel.querySelector('#timeView').textContent = 'Last Time saved:never';
         }else{
     inputPannel.querySelector('#timeView').textContent = null;
-    inputPannel.querySelector('#timeView').innerText = `Last Time saved:${currentTime}`;}
-     console.log(dte,"dte from creteinput")
+    inputPannel.querySelector('#timeView').innerText = `Last Time saved:${currentTime}`;
+  }
 };
 
 
@@ -74,7 +74,7 @@ async function createCards(){
   currentCard = card;
  setActiveCard()
  createInputPannel();
- console.log(dte,"create card")
+//  console.log(dte,"create card")
 }
 
 inputPannel.addEventListener('input',(e) =>{
@@ -98,7 +98,7 @@ inputPannel.addEventListener('input',(e) =>{
   d:0,
   b:0
  }
- console.log(noteData)
+//  console.log(noteData)
  if(title === ''){
   console.error("title empty");
   
@@ -112,7 +112,7 @@ function setActiveCard(){
 currentCard.addEventListener('click',async(e)=>{
   noteData.id = e.target.id;
   currentCardPannelView(e.target);
-  console.log(e.target.id);
+console.log(currentCard);
  let  getTime = await getObject(e.target.id,'ts');
   inputPannel.querySelector('#timeView').textContent = null;
 if(getTime == null){
@@ -122,20 +122,26 @@ if(getTime == null){
 };
 
 function currentCardPannelView(card){
+  if(card!=null){
  let cardTitle = card.querySelector("#card_title").textContent.trim()
  let cardContent = card.querySelector("#card_content").textContent.trim();
  let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
  let inputPannelContent = inputTextCondiner.querySelector('#note-write-content');
   inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
   inputPannelContent.value = cardContent === 'No Content'? "": cardContent;
-     inputPannel.querySelector('#timeView').textContent = null;
+     inputPannel.querySelector('#timeView').textContent = null;}
     
 }
-   add_trash.addEventListener('click',()=>{
- let cardId= currentCard.querySelector(".card_text").id
+
+add_trash.addEventListener('click',()=>{
+  // console.log(currentCard.querySelector("#card_title").textContent.trim())
+ let cardId = currentCard.querySelector(".card_text").id
  noteData.id = cardId;
  noteData.d = 1;
  cookiesSet(noteData);
+ currentCard.remove()
+ currentCard = noteCardListContainer.lastElementChild;
+ currentCardPannelView(currentCard)
   })
 
   async function cookiesSet(notesData) {
@@ -144,7 +150,6 @@ function currentCardPannelView(card){
     let note = [];
     if(exisitingCookie){
        let note = JSON.parse(atob(exisitingCookie.value));
-       console.log("notes",notesData)
        note.t = notesData.t;
        note.c = notesData.c;
        note.ts = notesData.ts;
@@ -162,7 +167,6 @@ function currentCardPannelView(card){
         expires:Date.now() + 1000 * 60 * 60 * 24 *7
        });   
     } 
-     console.log("exit cookies notes")
    } catch (err) {
     console.error(err)
    }
@@ -179,4 +183,10 @@ function currentCardPannelView(card){
    } catch (error) {
     }
   }
+
+
+ function createcardsModel(){
+
+  }
+  
 // twomarrow tras update check
