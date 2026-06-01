@@ -16,6 +16,8 @@ let title = null;
 let content = null;
 let dte 
 let noteData={};
+
+
 addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
 toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)});
@@ -24,7 +26,7 @@ toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyN
 function NotVisible(element){
 element.style.display = "none";
 }
-
+ 
 function vissible(element){
   element.style.display = "block";
 }
@@ -36,6 +38,10 @@ inActiveToggle.classList.remove('active');
 inActiveToggle.classList.add('in-active');
 vissible(activeCardList);
 NotVisible(inActiveCardList);
+console.log(activeCardList.lastElementChild,"activeCardList.lastElementChild")
+if(activeCardList.firstElementChild != null){
+ NotVisible(nocards); 
+}else vissible(nocards)
 }
 
 async function addNewNote() {
@@ -59,15 +65,13 @@ inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
 
 
 async function createCards(){
+   NotVisible(nocards);
   dte = Date.now();
-  NotVisible(nocards)
-  let card = document.createElement('div');
-  card.className="card_flex flex-box";
- card.innerHTML = `
- <div class="card_text" id = "${dte}">
-   <h1 id="card_title">Untitled Note</h2>
-    <samp id="card_content">No Content</samp></div>
-    <div id="card_date"></div>`
+  let card = await createcardsModel({dte,
+title:"Untitled Note",
+content:"No Content",
+  })
+  console.log(card)
   await noteList.appendChild(card);
   currentCard = card;
  createInputPannel();
@@ -139,8 +143,8 @@ add_trash.addEventListener('click',async()=>{
  noteData.id === cardId;
  noteData.d = 1;
  cookiesSet(noteData);
+ trashList.appendChild(currentCard)
  currentCard = noteList.lastElementChild;
- currentCard.remove()
  currentCardPannelView(currentCard);
 }
  catch(err){
@@ -196,17 +200,30 @@ console.log(err)
        let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
         
        let deleteNoteData = data.filter(data=>data.d===1)
-      console.log(deleteNoteData)
-       return note[obt];}
+      // console.log()
+       let trash = deleteNoteData.forEach(async(el)=>{let trashcreate = await createcardsModel({dte:el.id, title:el.t, content:el.c})
+      console.log(trashcreate);
+     trashList.appendChild(trashcreate)})
+     console.log(trash)
+     }
         else return null;
    } catch (error) {
     }
   }
 
-
-
- let createdCard = function createcardsModel(){
-
+function createcardsModel({
+    dte,
+    title,
+    content,
+    time}){
+ let card =  document.createElement('div');
+  card.className = "card_flex flex-box";
+ card.innerHTML = `
+ <div class="card_text" id = "${dte}">
+   <h1 id="card_title">${title}</h2>
+    <samp id="card_content">${content}</samp></div>
+    <div id="card_date"></div>`
+    return card
   }
   // set active card is cureent card and set trash cards
 // twomarrow tras update check
