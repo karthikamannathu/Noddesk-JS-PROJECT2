@@ -1,3 +1,5 @@
+
+
 let addNoteBtn = document.querySelector("#add-notes-btn");
 let noInput = document.querySelector(".placeholder");
 let nocards =document.querySelector(".no-notes")
@@ -17,10 +19,13 @@ let content = null;
 let dte 
 let noteData={};
 let allListItems = []
+  let currentDate = new Intl.DateTimeFormat('en-US',{month:'short', day:'numeric'}).format(Date.now());
 
 addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
-toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)});
+toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)
+ 
+});
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
  getTrashNote();
 function NotVisible(element){
@@ -82,22 +87,21 @@ inputPannel.addEventListener('input',(e) =>{
   const cardContent = currentCard.querySelector("#card_content");
     inputPannel.querySelector('#timeView').textContent = null;
     inputPannel.querySelector('#timeView').textContent= `Time saved:${currentTime}`;
-// console.log()
   if(e.target.id == "note-write-tittle")
-   title = cardTitle.innerText = e.target.value.trim();
+   title = cardTitle.textContent = e.target.value.trim();
   else
     content = cardContent.textContent = e.target.value.trim();
-console.log(new DataView)
+
  noteData =  {
   id:dte,
-  t:title? "" : "Untitled Note",
-  c:content? "" : "No Content",
+  t:title || "Untitled Note" ,
+  c:content || "No Content",
   ts:currentTime,
   d:0,
   b:0,
- 
+  md:currentDate
  }
-//  console.log(noteData)
+ console.log(noteData)
  if(title === ''){
   console.error("title empty");
   
@@ -198,9 +202,9 @@ console.log(err)
        let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
         
        let deleteNoteData = data.filter(data=>data.d===1)
-      // console.log()
-       let trash = deleteNoteData.forEach(async(el)=>{let trashcreate = await createcardsModel({
-        dte:el.id,title:el.t,content:el.c})
+       console.log( deleteNoteData)
+       let trash = deleteNoteData.forEach(async(value)=>{let trashcreate = await createcardsModel({
+        dte:value.id,title:value.t,content:value.c,d:value.md})
       console.log(trashcreate);
      trashList.appendChild(trashcreate)})
      console.log(trash)
@@ -214,14 +218,14 @@ function createcardsModel({
     dte,
     title = "Untitled Note",
    content = "No Content",
-    time}){
+    d = currentDate}){
  let card =  document.createElement('div');
   card.className = "card_flex flex-box";
  card.innerHTML = `
  <div class="card_text" id = "${dte}">
    <h1 id="card_title">${title}</h2>
     <samp id="card_content">${content}</samp></div>
-    <div id="card_date"></div>`
+    <div id="card_date">${d}</div>`
     return card
   }
 
