@@ -87,14 +87,15 @@ inputPannel.addEventListener('input',(e) =>{
    title = cardTitle.innerText = e.target.value.trim();
   else
     content = cardContent.textContent = e.target.value.trim();
-
+console.log(new DataView)
  noteData =  {
   id:dte,
   t:title? "" : "Untitled Note",
   c:content? "" : "No Content",
   ts:currentTime,
   d:0,
-  b:0
+  b:0,
+ 
  }
 //  console.log(noteData)
  if(title === ''){
