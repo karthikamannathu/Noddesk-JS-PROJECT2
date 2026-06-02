@@ -10,6 +10,7 @@ let noteList = document.querySelector("#note-cards-list");
 let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
 let toggleMyTrash = document.querySelector("#btn-trash");
+let coverDiv = document.querySelector(".optacitybox");
 
   let currentTime = null;
 let trashCard = null;
@@ -22,10 +23,13 @@ let allListItems = []
   let currentDate = new Intl.DateTimeFormat('en-US',{month:'short', day:'numeric'}).format(Date.now());
 
 addNoteBtn.addEventListener("click",addNewNote);
-toggleMyNotes.addEventListener('click',()=>{toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)});
-toggleMyTrash.addEventListener('click',() =>{toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList)
- 
-});
+toggleMyNotes.addEventListener('click',()=>{
+toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
+    coverDiv.style.display = "none"} );
+toggleMyTrash.addEventListener('click',()=>{
+ toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
+ coverDiv.style.display = "block"
+})
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
  getTrashNote();
 function NotVisible(element){
@@ -68,7 +72,9 @@ inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
   }
 };
 
-
+ function trashFun(){
+ 
+};
 async function createCards(){
    NotVisible(nocards);
   dte = Date.now();
@@ -116,7 +122,6 @@ trashList.addEventListener('click',setActiveCard);
 
 
 async function setActiveCard(e){
-  console.log(e.target,"cardsss")
   currentCard = e.target;
   noteData.id = e.target.id;
   currentCardPannelView(e.target);
@@ -128,7 +133,7 @@ if(getTime == null){
 };
 
 function currentCardPannelView(card){
-  if(card!=null){
+  if(card!= null){
  let cardTitle = card.querySelector("#card_title").textContent.trim()
  let cardContent = card.querySelector("#card_content").textContent.trim();
  let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
@@ -136,7 +141,6 @@ function currentCardPannelView(card){
   inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
   inputPannelContent.value = cardContent === 'No Content'? "": cardContent;
      inputPannel.querySelector('#timeView').textContent = null;}
-    
 }
 
 add_trash.addEventListener('click',async()=>{
