@@ -2,7 +2,7 @@
 
 let addNoteBtn = document.querySelector("#add-notes-btn");
 let noInput = document.querySelector(".placeholder");
-let nocards =document.querySelector(".no-notes")
+let nocards =document.querySelector(".no-notes");
 let inputPannel = document.querySelector(".notes-write-pannel");
 let inputTextCondiner = document.querySelector(".input-condiner");
 let add_trash = document.querySelector(".bi-trash3");
@@ -11,25 +11,29 @@ let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
 let toggleMyTrash = document.querySelector("#btn-trash");
 let coverDiv = document.querySelector(".optacitybox");
+let timeView = document.querySelector('.save-time')
 
   let currentTime = null;
 let trashCard = null;
 let currentCard = null
 let title = null;
 let content = null;
-let dte 
+let dataId
 let noteData={};
 let allListItems = []
-  let currentDate = new Intl.DateTimeFormat('en-US',{month:'short', day:'numeric'}).format(Date.now());
+  let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
 
 addNoteBtn.addEventListener("click",addNewNote);
 toggleMyNotes.addEventListener('click',()=>{
 toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
     coverDiv.style.display = "none"} );
+
 toggleMyTrash.addEventListener('click',()=>{
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
- coverDiv.style.display = "block"
-})
+ coverDiv.style.display = "flex";
+ createInputPannel();
+});
+
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
  getTrashNote();
 function NotVisible(element){
@@ -59,16 +63,17 @@ async function addNewNote() {
 }
 
 function createInputPannel(){
-inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
+  NotVisible(noInput)
+inputTextCondiner.innerHTML =`
         <input id ="note-write-tittle" 
         placeholder = " Note Title" class="input-text"> 
         <input id="note-write-content" 
         placeholder ="  Start typing.." class="input-text">`
         if(currentTime == null){
-       inputPannel.querySelector('#timeView').textContent = 'Last Time saved:never';
+      timeView.textContent = ' saved:never';
         }else{
-    inputPannel.querySelector('#timeView').textContent = null;
-    inputPannel.querySelector('#timeView').innerText = `Last Time saved:${currentTime}`;
+    timeView.textContent = null;
+    timeView.innerText = `Last saved:${currentTime}`;
   }
 };
 
@@ -77,13 +82,12 @@ inputTextCondiner.innerHTML =`<div id ="timeView" >Time saved:never</div>
 };
 async function createCards(){
    NotVisible(nocards);
-  dte = Date.now();
-  let card = await createcardsModel({dte })
-  console.log(card)
+  dataId = Date.now();
+  let card = await createcardsModel({dataId})
   await noteList.appendChild(card);
   currentCard = card;
  createInputPannel();
-//  console.log(dte,"create card")
+//  console.log(dataId,"create card")
 }
 
 inputPannel.addEventListener('input',(e) =>{
@@ -91,15 +95,15 @@ inputPannel.addEventListener('input',(e) =>{
   currentTime = new Date().toLocaleTimeString();
   const cardTitle = currentCard.querySelector("#card_title");
   const cardContent = currentCard.querySelector("#card_content");
-    inputPannel.querySelector('#timeView').textContent = null;
-    inputPannel.querySelector('#timeView').textContent= `Time saved:${currentTime}`;
+ timeView.textContent ='';
+  timeView.textContent= `saved:${currentTime}`;
   if(e.target.id == "note-write-tittle")
    title = cardTitle.textContent = e.target.value.trim();
   else
     content = cardContent.textContent = e.target.value.trim();
 
  noteData =  {
-  id:dte,
+  id:dataId,
   t:title || "Untitled Note" ,
   c:content || "No Content",
   ts:currentTime,
@@ -107,7 +111,6 @@ inputPannel.addEventListener('input',(e) =>{
   b:0,
   md:currentDate
  }
- console.log(noteData)
  if(title === ''){
   console.error("title empty");
   
@@ -120,28 +123,31 @@ inputPannel.addEventListener('input',(e) =>{
 noteList.addEventListener('click',setActiveCard);
 trashList.addEventListener('click',setActiveCard);
 
-
 async function setActiveCard(e){
   currentCard = e.target;
   noteData.id = e.target.id;
   currentCardPannelView(e.target);
- let  getTime = await getObject(e.target.id,'ts');
-  inputPannel.querySelector('#timeView').textContent = null;
+  console.log(e.target)
+  let  getTime = await getObject(e.target.id,'ts');
+ // set the timeView/
+  timeView.textContent= '';
+  // if card pass time check ------//
 if(getTime == null){
-    inputPannel.querySelector('#timeView').textContent= `Last Time saved:${currentTime}`; 
-}else  inputPannel.querySelector('#timeView').textContent = `Time saved:${getTime}`;
-};
-
-function currentCardPannelView(card){
+   timeView.textContent = `Last saved:${currentTime}`; 
+}else  timeView.textContent = `saved:${getTime}`;
+}
+ 
+ function currentCardPannelView(card){
   if(card!= null){
  let cardTitle = card.querySelector("#card_title").textContent.trim()
  let cardContent = card.querySelector("#card_content").textContent.trim();
  let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
  let inputPannelContent = inputTextCondiner.querySelector('#note-write-content');
+ 
   inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
   inputPannelContent.value = cardContent === 'No Content'? "": cardContent;
-     inputPannel.querySelector('#timeView').textContent = null;}
-}
+  }
+};
 
 add_trash.addEventListener('click',async()=>{
   try{ 
@@ -208,7 +214,7 @@ console.log(err)
        let deleteNoteData = data.filter(data=>data.d===1)
        console.log( deleteNoteData)
        let trash = deleteNoteData.forEach(async(value)=>{let trashcreate = await createcardsModel({
-        dte:value.id,title:value.t,content:value.c,d:value.md})
+        dataId:value.id,title:value.t,content:value.c,d:value.md})
       console.log(trashcreate);
      trashList.appendChild(trashcreate)})
      console.log(trash)
@@ -219,20 +225,19 @@ console.log(err)
   }
 
 function createcardsModel({
-    dte,
+    dataId,
     title = "Untitled Note",
    content = "No Content",
     d = currentDate}){
  let card =  document.createElement('div');
   card.className = "card_flex flex-box";
  card.innerHTML = `
- <div class="card_text" id = "${dte}">
+ <div class="card_text" id = "${dataId}">
    <h1 id="card_title">${title}</h2>
     <samp id="card_content">${content}</samp></div>
-    <div id="card_date">${d}</div>`
+    <div id="card_date"style = "pointer-events:none">${d}</div>`
     return card
   }
 
 
-  //  card is date,and save note card ,create card add object show date
-// twomarrow tras update check
+  //  search fun and  btn remove add trash remove button
