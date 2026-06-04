@@ -63,6 +63,7 @@ function vissible(element,style){
   element.style.display = style;}
 }
 
+
 function toggleViews(activeToggle,inActiveToggle,activeCardList,inActiveCardList){
 activeToggle.classList.remove('in-active');
 activeToggle.classList.add('active');
@@ -143,6 +144,7 @@ noteList.addEventListener('click',setActiveCard);
 trashList.addEventListener('click',setActiveCard);
 
 async function setActiveCard(e){
+  console.log(e.target.parentElement)
   currentCard = e.target.parentElement;
   noteData.id = e.target.id;
   let parent = e.target?.parentElement?.parentElement;
@@ -161,6 +163,15 @@ if(parent){
   }else{
     vissible(restoreDelBtn,"flex");
     NotVisible(trashbookmarkIcon);
+    restoreDelBtn.addEventListener("click",(e)=>{
+  console.log(e.target.className,"clicked..")
+  if(e.target.className == 'restore btn'){
+    console.log(currentCard)
+     noteData.d = 0;
+ cookiesSet(noteData);
+    noteList.appendChild(currentCard)
+  }
+})
   }
 }
 }
@@ -194,11 +205,11 @@ console.log(err)
   })
 
   async function cookiesSet(notesData) {
-   try {
+  
      const exisitingCookie = await cookieStore.get(notesData.id);
     let note = [];
     if(exisitingCookie){
-       let note = JSON.parse(atob(exisitingCookie.value));
+       try { let note = JSON.parse(atob(exisitingCookie.value));
        note.t = notesData.t;
        note.c = notesData.c;
        note.ts = notesData.ts;
@@ -209,6 +220,9 @@ console.log(err)
         value:btoa(JSON.stringify(note)),
         expires:Date.now() + 1000 * 60 * 60 *24 *7
        }); 
+          } catch (err) {
+    console.error(err)
+   }
     }else{
      cookieStore.set({
         name:notesData.id,
@@ -216,9 +230,7 @@ console.log(err)
         expires:Date.now() + 1000 * 60 * 60 * 24 *7
        });   
     } 
-   } catch (err) {
-    console.error(err)
-   }
+
   }
 
  let getObject = async function cookieObject(id,obt) {
