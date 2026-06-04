@@ -97,20 +97,22 @@ background-color: white;
 
 .card_flex{
     display: flex;
-    flex-direction:column;
+    flex-direction:row;
     margin: 20px;
    padding: 5px;
    width: auto;
-   gap:20px;
+   justify-content: space-around;
    height: auto;
    margin-bottom: 5px;
+   background-color: blueviolet;
+   border-left: solid 2px #000;
 }
 
 .card_text{
 cursor: pointer;
 width: 200px;
 height: 40px;
-border-left: solid  #000;
+
 }
 
 #card_title{
@@ -205,7 +207,7 @@ font-size: x-large;
 
 .icon{
     display: flex;
-    justify-content: space-around;
+    justify-content:space-around;
     width: 60px;
 }
 .save-time{
@@ -214,9 +216,10 @@ font-size: x-large;
 }
 
 .btn_flex{
-background-color: blue;
+padding: 10px 20px;
 float: right;
-   
+gap: 10px;
+justify-content: space-around;
 }
 
 .bi-pin{
@@ -227,4 +230,13 @@ background-color: yellow;
 
 .active-bookmark{
     background-color: yellow;
+}
+
+.list{
+    display: flex;
+    flex-direction: column;
+    gap :20px;
+    background-color: aquamarine;
+    padding:10px 1px;
+    height: auto;
 }

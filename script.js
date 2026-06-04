@@ -11,7 +11,9 @@ let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
 let toggleMyTrash = document.querySelector("#btn-trash");
 let coverDiv = document.querySelector(".optacitybox");
-let timeView = document.querySelector('.save-time')
+let timeView = document.querySelector('.save-time');
+let restoreDelBtn = document.querySelector('#btns');
+let trashbookmarkIcon=document.querySelector('.icon');
 
   let currentTime = null;
 let trashCard = null;
@@ -23,15 +25,31 @@ let noteData={};
 let allListItems = []
   let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
 
+
+NotVisible(restoreDelBtn);
+NotVisible(trashbookmarkIcon);
 addNoteBtn.addEventListener("click",addNewNote);
+
 toggleMyNotes.addEventListener('click',()=>{
 toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
-    coverDiv.style.display = "none"} );
+    NotVisible(coverDiv);
+    NotVisible(restoreDelBtn);
+NotVisible(trashbookmarkIcon);
+currentCard = noteList.firstElementChild;
+currentCardPannelView(currentCard);
+console.log("current note",currentCard)
+  } );
 
 toggleMyTrash.addEventListener('click',()=>{
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
- coverDiv.style.display = "flex";
+  vissible(coverDiv,"flex")
+ NotVisible(restoreDelBtn);
+NotVisible(trashbookmarkIcon);
+currentCard = trashList.firstElementChild;
+console.log("current trash",currentCard)
  createInputPannel();
+currentCardPannelView(currentCard);
+
 });
 
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
@@ -40,8 +58,9 @@ function NotVisible(element){
 element.style.display = "none";
 }
  
-function vissible(element){
-  element.style.display = "block";
+function vissible(element,style){
+  if(element){
+  element.style.display = style;}
 }
 
 function toggleViews(activeToggle,inActiveToggle,activeCardList,inActiveCardList){
@@ -49,16 +68,16 @@ activeToggle.classList.remove('in-active');
 activeToggle.classList.add('active');
 inActiveToggle.classList.remove('active');
 inActiveToggle.classList.add('in-active');
-vissible(activeCardList);
+vissible(activeCardList,"block");
 NotVisible(inActiveCardList);
-console.log(activeCardList.lastElementChild,"activeCardList.lastElementChild")
 if(activeCardList.firstElementChild != null){
  NotVisible(nocards); 
-}else vissible(nocards)
+}else vissible(nocards,"block")
 }
  
 async function addNewNote() {
- NotVisible(noInput)
+ NotVisible(noInput);
+ vissible(trashbookmarkIcon,"flex");
   createCards()
 }
 
@@ -124,10 +143,10 @@ noteList.addEventListener('click',setActiveCard);
 trashList.addEventListener('click',setActiveCard);
 
 async function setActiveCard(e){
-  currentCard = e.target;
+  currentCard = e.target.parentElement;
   noteData.id = e.target.id;
+  let parent = e.target?.parentElement?.parentElement;
   currentCardPannelView(e.target);
-  console.log(e.target)
   let  getTime = await getObject(e.target.id,'ts');
  // set the timeView/
   timeView.textContent= '';
@@ -135,6 +154,15 @@ async function setActiveCard(e){
 if(getTime == null){
    timeView.textContent = `Last saved:${currentTime}`; 
 }else  timeView.textContent = `saved:${getTime}`;
+if(parent){
+  if(parent.id == "note-cards-list" ){
+    vissible(trashbookmarkIcon,"flex");
+    NotVisible(restoreDelBtn);
+  }else{
+    vissible(restoreDelBtn,"flex");
+    NotVisible(trashbookmarkIcon);
+  }
+}
 }
  
  function currentCardPannelView(card){
@@ -143,7 +171,7 @@ if(getTime == null){
  let cardContent = card.querySelector("#card_content").textContent.trim();
  let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
  let inputPannelContent = inputTextCondiner.querySelector('#note-write-content');
- 
+
   inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
   inputPannelContent.value = cardContent === 'No Content'? "": cardContent;
   }
@@ -151,11 +179,12 @@ if(getTime == null){
 
 add_trash.addEventListener('click',async()=>{
   try{ 
- let cardId =currentCard.id
+    console.log(currentCard,"addtrash  ")
+ let cardId = currentCard.id
  noteData.id === cardId;
  noteData.d = 1;
  cookiesSet(noteData);
- trashList.appendChild(currentCard)
+ trashList.appendChild(currentCard);
  currentCard = noteList.lastElementChild;
  currentCardPannelView(currentCard);
 }
@@ -209,16 +238,16 @@ console.log(err)
       let getAllCookies = [] 
       getAllCookies = await cookieStore.getAll();
         if(getAllCookies){
-       let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
+      let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
         
-       let deleteNoteData = data.filter(data=>data.d===1)
-       console.log( deleteNoteData)
-       let trash = deleteNoteData.forEach(async(value)=>{let trashcreate = await createcardsModel({
+      let deleteNoteData = data.filter(data=>data.d===1)
+      
+      let trash = deleteNoteData.forEach(async(value)=>{
+        let trashcreate = await createcardsModel({
         dataId:value.id,title:value.t,content:value.c,d:value.md})
-      console.log(trashcreate);
-     trashList.appendChild(trashcreate)})
-     console.log(trash)
-     }
+
+       trashList.appendChild(trashcreate)})
+    }
         else return null;
    } catch (error) {
     }
