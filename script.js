@@ -300,5 +300,5 @@ function createcardsModel({
     return card
   }
 
-
-  //  search fun and  btn remove add trash remove button
+console.log(document.querySelectorAll('.card_flex flex-box'))
+  //  search fun 
