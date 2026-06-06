@@ -32,15 +32,7 @@ NotVisible(restoreDelBtn);
 NotVisible(trashbookmarkIcon);
 addNoteBtn.addEventListener("click",addNewNote);
 
-toggleMyNotes.addEventListener('click',()=>{
-toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
-    NotVisible(coverDiv);
- NotVisible(pannelHeadSection);
- NotVisible(restoreDelBtn);
-currentCard = noteList.firstElementChild;
-currentCardPannelView(currentCard);
-console.log("current note",currentCard)
-  } );
+toggleMyNotes.addEventListener('click',myNoteToggle);
 
 toggleMyTrash.addEventListener('click',()=>{
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
@@ -53,7 +45,18 @@ console.log("current trash",currentCard)
 
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
  getTrashNote();
-
+ 
+ function myNoteToggle(){
+toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
+    NotVisible(coverDiv);
+ NotVisible(pannelHeadSection);
+ NotVisible(restoreDelBtn);
+currentCard = noteList.firstElementChild;
+currentCardPannelView(currentCard);
+if(!currentCard){
+  createInputPannel()
+}
+ }
  
 function NotVisible(element){
 element.style.display = "none";
@@ -79,9 +82,10 @@ if(activeCardList.firstElementChild != null){
  
 async function addNewNote() {
  NotVisible(noInput);
+  myNoteToggle()
  vissible(pannelHeadSection,"flex")
  vissible(trashbookmarkIcon,"flex");
-  createCards()
+  createCards();
 }
 
 function createInputPannel(){
@@ -169,10 +173,17 @@ if(parent){
     restoreDelBtn.addEventListener("click",(e)=>{
   console.log(e.target.className,"clicked..")
   if(e.target.className == 'restore btn'){
-    console.log(currentCard)
      noteData.d = 0;
  cookiesSet(noteData);
     noteList.appendChild(currentCard)
+    currentCard = trashList.firstElementChild
+    currentCardPannelView(currentCard)
+  } else{
+  alert("delete permently")
+console.log(currentCard.querySelector('.card_text').id)
+const cardId = currentCard.querySelector('.card_text')?.id
+cookieStore.delete({name:cardId})
+currentCard = '';
   }
 })
   }
