@@ -10,11 +10,15 @@ let noteList = document.querySelector("#note-cards-list");
 let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
 let toggleMyTrash = document.querySelector("#btn-trash");
-let coverDiv = document.querySelector(".optacitybox");
+let coverDiv = document.querySelector(".input_cover");
 let timeView = document.querySelector('.save-time');
 let restoreDelBtn = document.querySelector('#btns');
-let trashbookmarkIcon=document.querySelector('.icon');
-let pannelHeadSection = document.querySelector(".head_section_right")
+let searchInput = document.querySelector('#search-input');
+let searchBtn = document.querySelector('#search-btn-id');
+let trashbookmarkIcon = document.querySelector('.icon');
+let pannelHeadSection = document.querySelector(".head_section_right");
+let cookiesStorageCount = document.querySelector("#storage_count");
+let cookiesStorageGreen = document.querySelector(".greenbox");
 
 let currentTime = null;
 let trashCard = null;
@@ -56,6 +60,7 @@ currentCardPannelView(currentCard);
 if(!currentCard){
   createInputPannel()
 }
+
  }
  
 function NotVisible(element){
@@ -116,7 +121,7 @@ async function createCards(){
 //  console.log(dataId,"create card")
 }
 
-inputPannel.addEventListener('input',(e) =>{
+inputPannel.addEventListener('input',async (e) =>{
  try {
   currentTime = new Date().toLocaleTimeString();
   const cardTitle = currentCard.querySelector("#card_title");
@@ -124,10 +129,15 @@ inputPannel.addEventListener('input',(e) =>{
  timeView.textContent ='';
   timeView.textContent= `saved:${currentTime}`;
   if(e.target.id == "note-write-tittle")
-   title = cardTitle.textContent = e.target.value.trim();
+ {  title = cardTitle.textContent = e.target.value.trim(); }   
   else
-    content = cardContent.textContent = e.target.value.trim();
+    {
+      content = cardContent.textContent = e.target.value.trim();}
 
+
+ let wordsCount = (title || "").replace(/\s/g, "").length +
+                   (content || "").replace(/\s/g, "").length;
+ 
  noteData =  {
   id:dataId,
   t:title || "Untitled Note" ,
@@ -137,10 +147,14 @@ inputPannel.addEventListener('input',(e) =>{
   b:0,
   md:currentDate
  }
+ 
  if(title === ''){
   console.error("title empty");
   
- }else cookiesSet(noteData)
+ }else cookiesSet(noteData);
+
+   await cookieFlags();
+ 
  } catch (er) {
   console.error(er)
  } 
@@ -213,12 +227,14 @@ add_trash.addEventListener('click',async()=>{
   try{ 
     console.log(currentCard,"addtrash  ")
  let cardId = currentCard.id
- noteData.id === cardId;
+ noteData.id = cardId;
  noteData.d = 1;
- cookiesSet(noteData);
+ await cookiesSet(noteData);
  trashList.appendChild(currentCard);
+ if(!noteList.lastElementChild){
  currentCard = noteList.lastElementChild;
  currentCardPannelView(currentCard);
+}
 }
  catch(err){
 console.log(err)
@@ -300,5 +316,44 @@ function createcardsModel({
     return card
   }
 
-console.log(document.querySelectorAll('.card_flex flex-box'))
+ searchInput.addEventListener("input",(e)=>{
+  const searchTerm = searchInput.value.trim().toLowerCase()
+const data = document.querySelectorAll(".card_text");
+ data.forEach((el) => {
+  const card = el.closest(".card_flex");
+  if (el.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+    card.style.display = "";
+  } else {
+    card.style.display = "none";
+  }
+});
+      
+  })
+
+async   function cookieFlags(){
+   let datas = await cookieStore.getAll().length
+let currentcookise =  document.cookie.length;
+ let cookieSize = Math.round(datas = (await cookieStore.getAll()).length 
++(currentcookise)/1025);
+
+
+ cookiesStorageCount.innerHTML = cookieSize
+  // clear old green bar
+ cookiesStorageGreen.innerHTML =''
+
+  let colorDiv = document.createElement("div");
+  colorDiv.style.width = cookieSize + "%";
+  colorDiv.style.background = "green";
+  colorDiv.style.height = "100%";
+  cookiesStorageGreen.appendChild(colorDiv);
+}
+ 
+
+// const text = data.textContent.trim().toLowerCase();
+
+// if(text.includes(searchTerm)){
+//   console.log(list);
+//   console.log(text.includes(searchTerm))
+// }
+
   //  search fun 

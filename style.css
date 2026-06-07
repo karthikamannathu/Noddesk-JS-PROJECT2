@@ -145,9 +145,7 @@ pointer-events: none;
     height: 100%;
     background-color: white;
     opacity:0.5;
-    top:6%;
-    left:auto;
- 
+  object-fit: contain;
 }
 .disable{
     display: none;
@@ -239,4 +237,8 @@ background-color: yellow;
     background-color: aquamarine;
     padding:10px 1px;
     height: auto;
+}
+
+.card-none{
+display: none;
 }
