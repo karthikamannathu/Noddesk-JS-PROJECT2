@@ -19,6 +19,7 @@ let trashbookmarkIcon = document.querySelector('.icon');
 let pannelHeadSection = document.querySelector(".head_section_right");
 let cookiesStorageCount = document.querySelector("#storage_count");
 let cookiesStorageGreen = document.querySelector(".greenbox");
+let wordsView = document.querySelector(".words-view");
 
 let currentTime = null;
 let trashCard = null;
@@ -137,6 +138,7 @@ inputPannel.addEventListener('input',async (e) =>{
 
  let wordsCount = (title || "").replace(/\s/g, "").length +
                    (content || "").replace(/\s/g, "").length;
+                   wordsView.textContent = `${wordsCount} words`
  
  noteData =  {
   id:dataId,
