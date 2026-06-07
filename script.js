@@ -167,9 +167,10 @@ trashList.addEventListener('click',setActiveCard);
 
 async function setActiveCard(e){
 vissible(inputTextCondiner,'block')
-  currentCard = e.target.parentElement;
+  currentCard = e.target?.closest(".card_flex");
+  
   noteData.id = e.target.id;
-  let parent = e.target?.parentElement?.parentElement;
+  let parent = currentCard?.parentElement;
   currentCardPannelView(e.target);
   let  getTime = await getObject(e.target.id,'ts');
  // set the timeView/
@@ -350,12 +351,4 @@ let currentcookise =  document.cookie.length;
   cookiesStorageGreen.appendChild(colorDiv);
 }
  
-
-// const text = data.textContent.trim().toLowerCase();
-
-// if(text.includes(searchTerm)){
-//   console.log(list);
-//   console.log(text.includes(searchTerm))
-// }
-
-  //  search fun 
+// words functions create and display change  // active cards foucuse styleing

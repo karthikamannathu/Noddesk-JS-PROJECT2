@@ -11,24 +11,25 @@
 .main-flex{
     display: flex;
     flex-direction: row;
-    margin: 10px;
+    margin:10px;
     
 }
 
 .left_section{
     width: 30%;
-    height: 100vh;
+    height: 90vh;
     border: solid 1px black;
     padding: 10px;
     display: flex;
     flex-direction: column;
 }
 .list_cards_section{
-    min-height: 550px;
+    height: 80%;
     width: auto;
-  
 }
+.cookie-storage{
 
+}
 .main-head{
     display: flex;
     justify-content:space-between ;  
@@ -102,17 +103,20 @@ background-color: white;
    padding: 5px;
    width: auto;
    justify-content: space-around;
-   height: auto;
-   margin-bottom: 5px;
-   background-color: blueviolet;
-   border-left: solid 2px #000;
+   height:60px;
+  
 }
 
 .card_text{
+    margin-top: 10px;
 cursor: pointer;
-width: 200px;
-height: 40px;
-
+width: 70%;
+height: auto;
+ border-left: solid ;
+ border-color: blue;
+ overflow: hidden;
+ border-radius: 4px;
+ padding:4px 6px ;
 }
 
 #card_title{
@@ -154,6 +158,7 @@ pointer-events: none;
 .flex-box{
     display: flex;
     justify-content: space-between;
+   width: 100%;
    
 }
 .card_date{
@@ -229,16 +234,18 @@ background-color: yellow;
 .active-bookmark{
     background-color: yellow;
 }
-
+.notes-write-pannel{
+height: 80%;
+}
 .list{
     display: flex;
     flex-direction: column;
-    gap :20px;
-    background-color: aquamarine;
-    padding:10px 1px;
     height: auto;
+    column-gap: 10px;
 }
 
-.card-none{
-display: none;
+.words-view{
+    float: right;
 }
+
+
