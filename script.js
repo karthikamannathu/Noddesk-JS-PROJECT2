@@ -6,6 +6,7 @@ let nocards =document.querySelector(".no-notes");
 let inputPannel = document.querySelector(".notes-write-pannel");
 let inputTextCondiner = document.querySelector(".input-condiner");
 let add_trash = document.querySelector(".bi-trash3");
+let add_bookmark = document.querySelector(".bi-bookmark");
 let noteList = document.querySelector("#note-cards-list");
 let trashList = document.querySelector("#trash-cards-list");
 let toggleMyNotes = document.querySelector("#btn-notes");
@@ -32,7 +33,7 @@ let noteData={};
 let allListItems = []
   let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
 
-
+console.log(currentCard)
 NotVisible(restoreDelBtn);
 NotVisible(trashbookmarkIcon);
 addNoteBtn.addEventListener("click",addNewNote);
@@ -43,7 +44,7 @@ toggleMyTrash.addEventListener('click',()=>{
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
   vissible(coverDiv,"flex")
 NotVisible(pannelHeadSection);
-console.log("current trash",currentCard)
+console.log("current ",currentCard)
  NotVisible(trashbookmarkIcon)
 
 });
@@ -57,6 +58,8 @@ toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
  NotVisible(pannelHeadSection);
  NotVisible(restoreDelBtn);
 currentCard = noteList.firstElementChild;
+// currentCard.style.background = "aquamarine";
+// scale: 1.03;
 currentCardPannelView(currentCard);
 if(!currentCard){
   createInputPannel()
@@ -79,18 +82,18 @@ activeToggle.classList.remove('in-active');
 activeToggle.classList.add('active');
 inActiveToggle.classList.remove('active');
 inActiveToggle.classList.add('in-active');
-vissible(activeCardList,"block");
+vissible(activeCardList,"flex");
 NotVisible(inActiveCardList);
 if(activeCardList.firstElementChild != null){
  NotVisible(nocards); 
 }else vissible(nocards,"block")
 }
- 
 async function addNewNote() {
  NotVisible(noInput);
   myNoteToggle()
  vissible(pannelHeadSection,"flex")
  vissible(trashbookmarkIcon,"flex");
+
   createCards();
 }
 
@@ -112,13 +115,17 @@ inputTextCondiner.innerHTML =`
  function trashFun(){
  
 };
-async function createCards(){
+async function createCards(e){
    NotVisible(nocards);
   dataId = Date.now();
-  let card = await createcardsModel({dataId})
-  await noteList.appendChild(card);
+    let card = await createcardsModel({dataId})
+    
+   await noteList.append(card);
+   noteList.lastChild.classList.add('cards-hover-effect'); 
   currentCard = card;
  createInputPannel();
+ 
+
 //  console.log(dataId,"create card")
 }
 
@@ -227,9 +234,8 @@ currentCard = '';
 };
 
 add_trash.addEventListener('click',async()=>{
-  try{ 
-    console.log(currentCard,"addtrash  ")
- let cardId = currentCard.id
+  try{  
+ let cardId = await currentCard.querySelector(".card_text").id
  noteData.id = cardId;
  noteData.d = 1;
  await cookiesSet(noteData);
@@ -242,8 +248,20 @@ add_trash.addEventListener('click',async()=>{
  catch(err){
 console.log(err)
  }
-  })
+  });
 
+add_bookmark.addEventListener('click',async(e)=>{
+  
+ let cardId = await currentCard.querySelector(".card_text").id
+ console.log(currentCard.querySelector(".card_text").id)
+ noteData.id = cardId;
+ noteData.b = 1;
+ await cookiesSet(noteData);
+ e.target.classList.add("active-bookmark");
+ currentCard.querySelector('#card_date').innerText ="";
+ currentCard.querySelector('#card_date').insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
+ console.log(currentCard)
+});
   async function cookiesSet(notesData) {
  
      const exisitingCookie = await cookieStore.get(notesData.id);
