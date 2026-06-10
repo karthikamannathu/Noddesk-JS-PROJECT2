@@ -48,7 +48,9 @@ console.log("current ",currentCard)
  NotVisible(trashbookmarkIcon)
 
 });
-
+if(currentCard){
+    currentCard.classList.add('cards-hover-effect'); 
+  }
  toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
  getTrashNote();
  
@@ -115,15 +117,16 @@ inputTextCondiner.innerHTML =`
  function trashFun(){
  
 };
-async function createCards(e){
+async function createCards(){
    NotVisible(nocards);
   dataId = Date.now();
     let card = await createcardsModel({dataId})
-    
    await noteList.append(card);
-   noteList.lastChild.classList.add('cards-hover-effect'); 
+  
   currentCard = card;
- createInputPannel();
+ 
+   createInputPannel();
+
  
 
 //  console.log(dataId,"create card")
@@ -169,23 +172,28 @@ inputPannel.addEventListener('input',async (e) =>{
  } 
 });
 
-noteList.addEventListener('click',setActiveCard);
+noteList.addEventListener('click',passCurrentTarget);
 trashList.addEventListener('click',setActiveCard);
 
-async function setActiveCard(e){
+function passCurrentTarget(e){
+setActiveCard(e.target)
+}
+
+
+async function setActiveCard(card){
 vissible(inputTextCondiner,'block')
-  currentCard = e.target?.closest(".card_flex");
+  currentCard = card?.closest(".card_flex");
   
-  noteData.id = e.target.id;
+  noteData.id = card.id;
   let parent = currentCard?.parentElement;
-  currentCardPannelView(e.target);
-  let  getTime = await getObject(e.target.id,'ts');
+  currentCardPannelView(card);
+  let  getTime = await getObject(card.id,'ts');
  // set the timeView/
   timeView.textContent= '';
   // if card pass time check ------//
 if(getTime == null){
    timeView.textContent = ` saved:${currentTime}`; 
-}else  timeView.textContent = `saved:${getTime}`;
+}else  timeView.textContent = ` Last saved:${getTime}`;
 if(parent){
   vissible(pannelHeadSection,"flex")
   if(parent.id == "note-cards-list" ){
@@ -213,8 +221,6 @@ currentCard = '';
   }
 }
 }
- 
-
 
  function currentCardPannelView(card){
 

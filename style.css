@@ -119,10 +119,10 @@ background-color: white;
  border-radius: 10px;
  scale: -2px;;  
 }
-.card_flex:hover{
+/* .card_flex:hover{
 background-color:  rgb(208, 234, 250);
  border-radius: 10px;
-}
+} */
 .card-active{
  background-color: rgb(127, 225, 255);
 scale: 1.03;   
