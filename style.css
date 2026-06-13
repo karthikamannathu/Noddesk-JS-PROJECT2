@@ -110,12 +110,27 @@ background-color: white;
    text-align: center;
    width: auto;
    justify-content: space-between;
-   height:60px;
-  
+   height:60px;  
   
 }
+.card_flex {
+  transition: all 0.2s ease;
+}
+
+.card_flex:hover {
+  background: #f5f5f5;
+background-color:  rgb(117, 197, 247);
+ border-radius: 10px;
+ cursor: pointer;
+}
+
+.card_flex.card-active {
+  background: #b2dcfb;
+  border-left: 4px solid #2196f3;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
 .cards-hover-effect{
-  background-color:  rgb(208, 234, 250);
+  background-color:  rgb(117, 197, 247);
  border-radius: 10px;
  scale: -2px;;  
 }
@@ -123,18 +138,18 @@ background-color: white;
 background-color:  rgb(208, 234, 250);
  border-radius: 10px;
 } */
-.card-active{
+/* .card-active{
  background-color: rgb(127, 225, 255);
 scale: 1.03;   
 }
 .card-inactive{
     background-color:none;
 scale: none;  
-}
+} */
 
 .card_text{
-    margin-top: 10px;
-cursor: pointer;
+margin-top: 10px;
+pointer-events: none;
 width: 70%;
 height: auto;
  border-left: solid ;
@@ -153,6 +168,10 @@ pointer-events: none;
 pointer-events: none;
 }
 
+#card_date{
+ pointer-events: none;   
+}
+
 .note_flex{
     display: flex;
     justify-content: space-between;
@@ -165,8 +184,7 @@ pointer-events: none;
       
 }
 .input-condiner{
-    position: relative;
-   
+    position:fixed;
 }
 .placeholder{
  align-self: center;
@@ -175,12 +193,13 @@ pointer-events: none;
  vertical-align: middle;
 }
 .optacitybox{
-    position: absolute;
+    position:fixed;
     width: 100%;
     height: 100%;
-    background-color: white;
+    background-color: rgb(228, 81, 81);
     opacity:0.5;
-  object-fit: contain;
+  pointer-events: none;
+  inp
 }
 
 

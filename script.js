@@ -33,72 +33,70 @@ let noteData={};
 let allListItems = []
   let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
 
-console.log(currentCard)
+
 NotVisible(restoreDelBtn);
 NotVisible(trashbookmarkIcon);
-addNoteBtn.addEventListener("click",addNewNote);
 
+// ---toggle btn  funs----/
+
+// 1.activeToggles set---
+function toggleViews(activeToggle,inActiveToggle,activeCardList,inActiveCardList){
+activeToggle.classList.remove('in-active');
+activeToggle.classList.add('active');
+inActiveToggle.classList.remove('active');
+inActiveToggle.classList.add('in-active');
+visible(activeCardList,"flex");
+NotVisible(inActiveCardList);
+if(activeCardList.firstElementChild != null){
+ NotVisible(nocards); 
+}else visible(nocards,"block")
+}
+
+toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)//defualt mynotetoggle btn set
+ getTrashNote();//trash fun call global 
+
+// 2.Toggle events
+//mynote event-----
 toggleMyNotes.addEventListener('click',myNoteToggle);
 
-toggleMyTrash.addEventListener('click',()=>{
- toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
-  vissible(coverDiv,"flex")
-NotVisible(pannelHeadSection);
-console.log("current ",currentCard)
- NotVisible(trashbookmarkIcon)
-
-});
-if(currentCard){
-    currentCard.classList.add('cards-hover-effect'); 
-  }
- toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)
- getTrashNote();
- 
  function myNoteToggle(){
 toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
     NotVisible(coverDiv);
  NotVisible(pannelHeadSection);
  NotVisible(restoreDelBtn);
 currentCard = noteList.firstElementChild;
-// currentCard.style.background = "aquamarine";
-// scale: 1.03;
 currentCardPannelView(currentCard);
 if(!currentCard){
   createInputPannel()
 }
 
  }
- 
-function NotVisible(element){
-element.style.display = "none";
-}
- 
-function vissible(element,style){
-  if(element){
-  element.style.display = style;}
-}
+
+//trash event-----
+toggleMyTrash.addEventListener('click',()=>{
+ toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
+visible(coverDiv,"flex");
+NotVisible(pannelHeadSection);
+// console.log("currentcard ",currentCard)
+ NotVisible(trashbookmarkIcon)
+
+});
 
 
-function toggleViews(activeToggle,inActiveToggle,activeCardList,inActiveCardList){
-activeToggle.classList.remove('in-active');
-activeToggle.classList.add('active');
-inActiveToggle.classList.remove('active');
-inActiveToggle.classList.add('in-active');
-vissible(activeCardList,"flex");
-NotVisible(inActiveCardList);
-if(activeCardList.firstElementChild != null){
- NotVisible(nocards); 
-}else vissible(nocards,"block")
-}
+// --- New note creations-----//
+
+//1. note add event----/
+addNoteBtn.addEventListener("click",addNewNote);
+
 async function addNewNote() {
  NotVisible(noInput);
   myNoteToggle()
- vissible(pannelHeadSection,"flex")
- vissible(trashbookmarkIcon,"flex");
-
+visible(pannelHeadSection,"flex")
+visible(trashbookmarkIcon,"flex");
   createCards();
 }
 
+// 2.create UI pannel New-----/
 function createInputPannel(){
   NotVisible(noInput)
 inputTextCondiner.innerHTML =`
@@ -110,28 +108,21 @@ inputTextCondiner.innerHTML =`
       timeView.textContent = 'Last saved:never';
         }else{
     timeView.textContent = null;
-    timeView.innerText = ` saved:${currentTime}`;
+    timeView.innerText = `Last saved:${currentTime}`;
   }
 };
-
- function trashFun(){
- 
-};
+//3.Create new note card---//
 async function createCards(){
    NotVisible(nocards);
   dataId = Date.now();
     let card = await createcardsModel({dataId})
    await noteList.append(card);
-  
-  currentCard = card;
- 
+   currentCard = card
    createInputPannel();
-
- 
-
 //  console.log(dataId,"create card")
 }
 
+ //4.input pass event----//
 inputPannel.addEventListener('input',async (e) =>{
  try {
   currentTime = new Date().toLocaleTimeString();
@@ -172,50 +163,52 @@ inputPannel.addEventListener('input',async (e) =>{
  } 
 });
 
-noteList.addEventListener('click',passCurrentTarget);
-trashList.addEventListener('click',setActiveCard);
+noteList.addEventListener('click',(e)=>setActiveCard(e.target.parentElement));
+trashList.addEventListener('click',(e)=>setActiveCard(e.target));
 
-function passCurrentTarget(e){
-setActiveCard(e.target)
-}
 
 
 async function setActiveCard(card){
-vissible(inputTextCondiner,'block')
-  currentCard = card?.closest(".card_flex");
-  
+console.log(card)
+  currentCard = card?.closest(".card_flex") || card;
+visible(inputTextCondiner,'block')
   noteData.id = card.id;
-  let parent = currentCard?.parentElement;
-  currentCardPannelView(card);
   let  getTime = await getObject(card.id,'ts');
  // set the timeView/
   timeView.textContent= '';
   // if card pass time check ------//
 if(getTime == null){
    timeView.textContent = ` saved:${currentTime}`; 
-}else  timeView.textContent = ` Last saved:${getTime}`;
-if(parent){
-  vissible(pannelHeadSection,"flex")
-  if(parent.id == "note-cards-list" ){
-    vissible(trashbookmarkIcon,"flex");
+}else  timeView.textContent = `saved:${getTime}`;
+currentCardPannelView(card);
+//  console.log(currentCard.querySelector('.card_text'),"current")
+
+
+if(card){
+visible(pannelHeadSection,"flex")
+console.log(card,"from set active")
+  if(card.id == "note-cards-list" ){
+  visible(trashbookmarkIcon,"flex");
     NotVisible(restoreDelBtn);
   }else{
-    vissible(restoreDelBtn,"flex");
+    visible(restoreDelBtn,"flex");
     NotVisible(trashbookmarkIcon);
     restoreDelBtn.addEventListener("click",(e)=>{
   console.log(e.target.className,"clicked..")
   if(e.target.className == 'restore btn'){
      noteData.d = 0;
  cookiesSet(noteData);
+ console.log(currentCard,"current")
     noteList.appendChild(currentCard)
     currentCard = trashList.firstElementChild
     currentCardPannelView(currentCard)
+
   } else{
   alert("delete permently")
-console.log(currentCard.querySelector('.card_text').id)
+console.log(currentCard.querySelector('.card_text')?.id,"current")
 const cardId = currentCard.querySelector('.card_text')?.id
 cookieStore.delete({name:cardId})
-currentCard = '';
+currentCard.innerHTML = '';
   }
 })
   }
@@ -225,6 +218,7 @@ currentCard = '';
  function currentCardPannelView(card){
 
   if(card){
+    console.log(card,"pannel")
  let cardTitle = card.querySelector("#card_title").textContent.trim();
  let cardContent = card.querySelector("#card_content").textContent.trim();
  let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
@@ -268,6 +262,23 @@ add_bookmark.addEventListener('click',async(e)=>{
  currentCard.querySelector('#card_date').insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
  console.log(currentCard)
 });
+
+ searchInput.addEventListener("input",(e)=>{
+  const searchTerm = searchInput.value.trim().toLowerCase()
+const data = document.querySelectorAll(".card_text");
+ data.forEach((el) => {
+  const card = el.closest(".card_flex");
+  if (el.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
+    card.style.display = "";
+    setActiveCard(el);
+  } else {
+    card.style.display = "none";
+  }
+});
+      
+  })
+
+// ----Cookies set---//
   async function cookiesSet(notesData) {
  
      const exisitingCookie = await cookieStore.get(notesData.id);
@@ -308,6 +319,8 @@ add_bookmark.addEventListener('click',async(e)=>{
     }
   }
 
+
+
   async function getTrashNote(){
     try {
       let getAllCookies = [] 
@@ -343,19 +356,7 @@ function createcardsModel({
     return card
   }
 
- searchInput.addEventListener("input",(e)=>{
-  const searchTerm = searchInput.value.trim().toLowerCase()
-const data = document.querySelectorAll(".card_text");
- data.forEach((el) => {
-  const card = el.closest(".card_flex");
-  if (el.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
-    card.style.display = "";
-  } else {
-    card.style.display = "none";
-  }
-});
-      
-  })
+
 
 async   function cookieFlags(){
    let datas = await cookieStore.getAll().length
@@ -375,4 +376,20 @@ let currentcookise =  document.cookie.length;
   cookiesStorageGreen.appendChild(colorDiv);
 }
  
+
+
+//---- vissibility functions-------
+
+// notvisible---
+function NotVisible(element){
+element.style.display = "none";
+}
+ //visible fun---
+function visible(element,style){
+  if(element){
+  element.style.display = style;}
+}
+
+
+
 // words functions create and display change  // active cards foucuse styleing
