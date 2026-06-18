@@ -199,9 +199,10 @@ pointer-events: none;
     background-color: rgb(228, 81, 81);
     opacity:0.5;
   pointer-events: none;
-  inp
 }
-
+.style-ponter{
+   pointer-events: none; 
+}
 
 .flex-box{
     display: flex;

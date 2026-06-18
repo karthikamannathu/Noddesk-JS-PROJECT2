@@ -62,6 +62,7 @@ toggleMyNotes.addEventListener('click',myNoteToggle);
  function myNoteToggle(){
 toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
     NotVisible(coverDiv);
+inputTextCondiner.classList.remove('style-ponter');
  NotVisible(pannelHeadSection);
  NotVisible(restoreDelBtn);
 currentCard = noteList.firstElementChild;
@@ -69,17 +70,17 @@ currentCardPannelView(currentCard);
 if(!currentCard){
   createInputPannel()
 }
-
  }
 
-//trash event-----
+             //-----Trash event-----
 toggleMyTrash.addEventListener('click',()=>{
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
 visible(coverDiv,"flex");
 NotVisible(pannelHeadSection);
 // console.log("currentcard ",currentCard)
  NotVisible(trashbookmarkIcon)
-
+ inputTextCondiner.classList.add('style-ponter')
+ 
 });
 
 
@@ -128,13 +129,16 @@ inputPannel.addEventListener('input',async (e) =>{
   currentTime = new Date().toLocaleTimeString();
   const cardTitle = currentCard.querySelector("#card_title");
   const cardContent = currentCard.querySelector("#card_content");
- timeView.textContent ='';
+  timeView.textContent ='';
   timeView.textContent= `saved:${currentTime}`;
+
+
   if(e.target.id == "note-write-tittle")
  {  title = cardTitle.textContent = e.target.value.trim(); }   
   else
     {
-      content = cardContent.textContent = e.target.value.trim();}
+      content = cardContent.textContent = e.target.value.trim();
+    }
 
 
  let wordsCount = (title || "").replace(/\s/g, "").length +
@@ -149,12 +153,11 @@ inputPannel.addEventListener('input',async (e) =>{
   d:0,
   b:0,
   md:currentDate
- }
+ };
  
  if(title === ''){
-  console.error("title empty");
-  
- }else cookiesSet(noteData);
+  alert("enter title");
+ } else cookiesSet(noteData);
 
    await cookieFlags();
  
@@ -163,74 +166,61 @@ inputPannel.addEventListener('input',async (e) =>{
  } 
 });
 
-noteList.addEventListener('click',(e)=>setActiveCard(e.target.parentElement));
+noteList.addEventListener('click',(e)=>setActiveCard(e.target));
 trashList.addEventListener('click',(e)=>setActiveCard(e.target));
 
 
 
 async function setActiveCard(card){
-console.log(card)
-  currentCard = card?.closest(".card_flex") || card;
+  // console.log(card,"card")
+  currentCard = card 
 visible(inputTextCondiner,'block')
-  noteData.id = card.id;
-  let  getTime = await getObject(card.id,'ts');
+  noteData.id = currentCard.querySelector(".card_text").id;
+    let  getTime = await getObject(currentCard.querySelector(".card_text").id,'ts');
  // set the timeView/
+ console.log("getTime",getTime)
   timeView.textContent= '';
+  currentTime = getTime;//  trash add time update
   // if card pass time check ------//
 if(getTime == null){
-   timeView.textContent = ` saved:${currentTime}`; 
-}else  timeView.textContent = `saved:${getTime}`;
+    timeView.textContent = `Last saved:${currentTime}`;
+}else {
+   timeView.textContent = `saved:${getTime}`;}
 currentCardPannelView(card);
 //  console.log(currentCard.querySelector('.card_text'),"current")
 
 
 if(card){
 visible(pannelHeadSection,"flex")
-console.log(card,"from set active")
-  if(card.id == "note-cards-list" ){
+// console.log(card.parentElement,"from set active")
+  if(card?.parentElement.id == "note-cards-list" ){
   visible(trashbookmarkIcon,"flex");
     NotVisible(restoreDelBtn);
   }else{
     visible(restoreDelBtn,"flex");
     NotVisible(trashbookmarkIcon);
-    restoreDelBtn.addEventListener("click",(e)=>{
-  console.log(e.target.className,"clicked..")
-  if(e.target.className == 'restore btn'){
-     noteData.d = 0;
- cookiesSet(noteData);
- console.log(currentCard,"current")
-    noteList.appendChild(currentCard)
-    currentCard = trashList.firstElementChild
-    currentCardPannelView(currentCard)
 
-  } else{
-  alert("delete permently")
-console.log(currentCard.querySelector('.card_text')?.id,"current")
-const cardId = currentCard.querySelector('.card_text')?.id
-cookieStore.delete({name:cardId})
-currentCard.innerHTML = '';
-  }
-})
   }
 }
 }
 
  function currentCardPannelView(card){
-
-  if(card){
-    console.log(card,"pannel")
- let cardTitle = card.querySelector("#card_title").textContent.trim();
- let cardContent = card.querySelector("#card_content").textContent.trim();
- let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
+   let inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
  let inputPannelContent = inputTextCondiner.querySelector('#note-write-content');
- if(!inputPannelTitle){
+ if(!inputPannelTitle || !card){
   createInputPannel();
  inputPannelTitle = inputTextCondiner.querySelector('#note-write-tittle');
   inputPannelContent = inputTextCondiner.querySelector('#note-write-content');
  }
+else{
+  let cardTitle = card.querySelector("#card_title").textContent.trim();
+ let cardContent = card.querySelector("#card_content").textContent.trim();
+
+
+
   inputPannelTitle.value = cardTitle === 'Untitled Note'? "" : cardTitle;
-  inputPannelContent.value = cardContent === 'No Content'? "": cardContent;
-}
+  inputPannelContent.value = cardContent === 'No Content'? "": cardContent;}
+
 };
 
 add_trash.addEventListener('click',async()=>{
@@ -238,6 +228,7 @@ add_trash.addEventListener('click',async()=>{
  let cardId = await currentCard.querySelector(".card_text").id
  noteData.id = cardId;
  noteData.d = 1;
+ noteData.ts = currentTime;
  await cookiesSet(noteData);
  trashList.appendChild(currentCard);
  if(!noteList.lastElementChild){
@@ -262,6 +253,25 @@ add_bookmark.addEventListener('click',async(e)=>{
  currentCard.querySelector('#card_date').insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
  console.log(currentCard)
 });
+
+    restoreDelBtn.addEventListener("click",(e)=> {
+  console.log(e.target.className,"clicked..")
+  if(e.target.className == 'restore btn'){
+     noteData.d = 0;
+ cookiesSet(noteData);
+ console.log(currentCard,"current")
+    noteList.appendChild(currentCard)
+    currentCard = trashList.firstElementChild
+    currentCardPannelView(currentCard)
+
+  } else{
+  alert("delete permently")
+console.log(currentCard.querySelector('.card_text')?.id,"current")
+const cardId = currentCard.querySelector('.card_text')?.id
+cookieStore.delete({name:cardId})
+currentCard.innerHTML = '';
+  }
+})
 
  searchInput.addEventListener("input",(e)=>{
   const searchTerm = searchInput.value.trim().toLowerCase()
@@ -316,6 +326,7 @@ const data = document.querySelectorAll(".card_text");
        return note[obt];}
         else return null;
    } catch (error) {
+    console.error(error)
     }
   }
 
