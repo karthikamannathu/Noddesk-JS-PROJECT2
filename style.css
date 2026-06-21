@@ -24,14 +24,18 @@ background-color: #727272;
 .left_section{
     width: 30%;
     height: 90vh;
-    padding: 10px;
     display: flex;
      box-shadow: 0px 2px 4px rgba(163, 162, 162, 0.797);
     flex-direction: column;
 }
+
+.head_section_left{
+padding: 10px;
+}
 .list_cards_section{
     height: 80%;
     width: auto;
+    background-color: whitesmoke;
 }
 .cookie-storage{
 
@@ -103,36 +107,30 @@ background-color: white;
    
 };
 
-.card_flex{
-    flex-direction:row;
-    margin: 20px;
-   padding: 10px 5px;
-   text-align: center;
-   width: auto;
-   justify-content: space-between;
-   height:60px;  
-  
-}
-.card_flex {
-  transition: all 0.2s ease;
-}
-
 .card_flex:hover {
   background: #f5f5f5;
 background-color:  rgb(117, 197, 247);
  border-radius: 10px;
  cursor: pointer;
+ border-radius: 10px; 
+ padding: 2px; 
+ border-left: 4px solid rgb(0, 123, 255); 
 }
 
-.card_flex.card-active {
-  background: #b2dcfb;
-  border-left: 4px solid #2196f3;
-  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+.card-active {
+ background-color:  rgb(236, 247, 254);   
+border-radius: 10px; 
+ padding: 2px; 
+ border-left: 4px solid rgb(0, 123, 255); 
+    transition: all 0.2s ease;
 }
-.cards-hover-effect{
-  background-color:  rgb(117, 197, 247);
- border-radius: 10px;
- scale: -2px;;  
+.cards-inactive{
+background-color:white;   
+ box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+   border-radius: 10px; 
+   border-radius: 10px; 
+ padding: 2px; 
+ border-left: 4px solid rgb(0, 123, 255); 
 }
 /* .card_flex:hover{
 background-color:  rgb(208, 234, 250);
@@ -152,8 +150,6 @@ margin-top: 10px;
 pointer-events: none;
 width: 70%;
 height: auto;
- border-left: solid ;
- border-color: blue;
  overflow: hidden;
  border-radius: 4px;
  padding:4px 6px ;
@@ -193,10 +189,10 @@ pointer-events: none;
  vertical-align: middle;
 }
 .optacitybox{
-    position:fixed;
+    position:static;
     width: 100%;
     height: 100%;
-    background-color: rgb(228, 81, 81);
+    background-color: whitesmoke;
     opacity:0.5;
   pointer-events: none;
 }
@@ -275,7 +271,6 @@ justify-content: space-around;
 }
 
 .bi-pin{
-
 height: max-content;
 background-color: yellow;
 }
@@ -293,6 +288,7 @@ height: 80%;
     height: auto;
     gap:10px;
     object-fit: contain;
+    padding: 10px;
 }
 
 .words-view{

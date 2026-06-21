@@ -31,7 +31,7 @@ let dataId;
 let cont = 0;
 let noteData={};
 let allListItems = []
-  let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
+let currentDate = new Intl.DateTimeFormat('en-US',{ day:'numeric',month:'short'}).format(Date.now());
 
 
 NotVisible(restoreDelBtn);
@@ -53,7 +53,7 @@ if(activeCardList.firstElementChild != null){
 }
 
 toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList)//defualt mynotetoggle btn set
- getTrashNote();//trash fun call global 
+
 
 // 2.Toggle events
 //mynote event-----
@@ -65,15 +65,18 @@ toggleViews(toggleMyNotes,toggleMyTrash,noteList,trashList);
 inputTextCondiner.classList.remove('style-ponter');
  NotVisible(pannelHeadSection);
  NotVisible(restoreDelBtn);
-currentCard = noteList.firstElementChild;
+currentCard = noteList.lastElementChild;
 currentCardPannelView(currentCard);
 if(!currentCard){
   createInputPannel()
+}else{
+  setActiveCard(currentCard)
 }
- }
 
+ }
+getTrashNote();//trash fun call global 
              //-----Trash event-----
-toggleMyTrash.addEventListener('click',()=>{
+toggleMyTrash.addEventListener('click',()=>{ 
  toggleViews(toggleMyTrash,toggleMyNotes,trashList,noteList);
 visible(coverDiv,"flex");
 NotVisible(pannelHeadSection);
@@ -81,6 +84,9 @@ NotVisible(pannelHeadSection);
  NotVisible(trashbookmarkIcon)
  inputTextCondiner.classList.add('style-ponter')
  
+ if(trashList.lastElementChild){
+  setActiveCard(trashList.lastChild)
+}
 });
 
 
@@ -112,15 +118,19 @@ inputTextCondiner.innerHTML =`
     timeView.innerText = `Last saved:${currentTime}`;
   }
 };
+
 //3.Create new note card---//
 async function createCards(){
    NotVisible(nocards);
+   
   dataId = Date.now();
     let card = await createcardsModel({dataId})
    await noteList.append(card);
-   currentCard = card
+   currentCard = card;
+    
+   setActiveCard(card)
    createInputPannel();
-//  console.log(dataId,"create card")
+
 }
 
  //4.input pass event----//
@@ -138,7 +148,7 @@ inputPannel.addEventListener('input',async (e) =>{
   else
     {
       content = cardContent.textContent = e.target.value.trim();
-    }
+    };
 
 
  let wordsCount = (title || "").replace(/\s/g, "").length +
@@ -152,7 +162,7 @@ inputPannel.addEventListener('input',async (e) =>{
   ts:currentTime,
   d:0,
   b:0,
-  md:currentDate
+  dt:currentDate
  };
  
  if(title === ''){
@@ -172,11 +182,17 @@ trashList.addEventListener('click',(e)=>setActiveCard(e.target));
 
 
 async function setActiveCard(card){
-  // console.log(card,"card")
+  add_bookmark.classList.remove("active-bookmark");
+   document.querySelectorAll('.card_flex').forEach(el => {
+    el.classList.add('cards-inactive');
+    el.classList.remove('card-active');
+  });
+  // Add active class only to selected card
+  card.classList.replace('cards-inactive','card-active');
   currentCard = card 
 visible(inputTextCondiner,'block')
   noteData.id = currentCard.querySelector(".card_text").id;
-    let  getTime = await getObject(currentCard.querySelector(".card_text").id,'ts');
+  let  getTime = await getObject(currentCard.querySelector(".card_text").id,'ts');
  // set the timeView/
  console.log("getTime",getTime)
   timeView.textContent= '';
@@ -188,8 +204,6 @@ if(getTime == null){
    timeView.textContent = `saved:${getTime}`;}
 currentCardPannelView(card);
 //  console.log(currentCard.querySelector('.card_text'),"current")
-
-
 if(card){
 visible(pannelHeadSection,"flex")
 // console.log(card.parentElement,"from set active")
@@ -224,17 +238,24 @@ else{
 };
 
 add_trash.addEventListener('click',async()=>{
-  try{  
- let cardId = await currentCard.querySelector(".card_text").id
+  try{ 
+    
+ let cardId = await currentCard.querySelector(".card_text").id;
+ let title = await currentCard.querySelector('#card_title').textContent;
+ let content = await currentCard.querySelector('#card_content').textContent;
  noteData.id = cardId;
- noteData.d = 1;
+noteData.t=title || "Untitled Note" ,
+noteData.c = content || "No Content",
+  noteData.d = 1;
  noteData.ts = currentTime;
+ console.log(noteData)
  await cookiesSet(noteData);
  trashList.appendChild(currentCard);
- if(!noteList.lastElementChild){
- currentCard = noteList.lastElementChild;
- currentCardPannelView(currentCard);
+if(noteList.lastChild){
+setActiveCard(noteList.lastElementChild);
+ currentCardPannelView(noteList.lastElementChild);
 }
+
 }
  catch(err){
 console.log(err)
@@ -266,10 +287,10 @@ add_bookmark.addEventListener('click',async(e)=>{
 
   } else{
   alert("delete permently")
-console.log(currentCard.querySelector('.card_text')?.id,"current")
+console.log(currentCard)
 const cardId = currentCard.querySelector('.card_text')?.id
 cookieStore.delete({name:cardId})
-currentCard.innerHTML = '';
+currentCard.remove ()
   }
 })
 
@@ -280,7 +301,8 @@ const data = document.querySelectorAll(".card_text");
   const card = el.closest(".card_flex");
   if (el.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
     card.style.display = "";
-    setActiveCard(el);
+
+    setActiveCard(card);
   } else {
     card.style.display = "none";
   }
@@ -340,11 +362,11 @@ const data = document.querySelectorAll(".card_text");
       let data = getAllCookies.map(data=>JSON.parse(atob(data.value)));
         
       let deleteNoteData = data.filter(data=>data.d===1)
-      
+        console.log(data)
       let trash = deleteNoteData.forEach(async(value)=>{
         let trashcreate = await createcardsModel({
-        dataId:value.id,title:value.t,content:value.c,d:value.md})
-
+        dataId:value.id,title:value.t,content:value.c,date:value.dt})
+      
        trashList.appendChild(trashcreate)})
     }
         else return null;
@@ -356,38 +378,40 @@ function createcardsModel({
     dataId,
     title = "Untitled Note",
    content = "No Content",
-    d = currentDate}){
+    date }){
  let card =  document.createElement('div');
   card.className = "card_flex flex-box";
  card.innerHTML = `
  <div class="card_text" id = "${dataId}">
    <h1 id="card_title">${title}</h2>
     <samp id="card_content">${content}</samp></div>
-    <div id="card_date"style = "pointer-events:none">${d}</div>`
+    <div id="card_date"style = "pointer-events:none">${date}</div>`
+   
     return card
   }
 
 
 
-async   function cookieFlags(){
-   let datas = await cookieStore.getAll().length
-let currentcookise =  document.cookie.length;
- let cookieSize = Math.round(datas = (await cookieStore.getAll()).length 
-+(currentcookise)/1025);
+async   function cookieFlags(){  
+let currentcookise = document.cookie.length;
 
+ let cookieSize =(( currentcookise)/1024).toFixed(2);
 
- cookiesStorageCount.innerHTML = cookieSize
+ cookiesStorageCount.innerHTML = `${cookieSize}kb`
   // clear old green bar
- cookiesStorageGreen.innerHTML =''
+ cookiesStorageGreen.innerHTML = ''
 
   let colorDiv = document.createElement("div");
-  colorDiv.style.width = cookieSize + "%";
+   colorDiv.style.width = `${2+cookieSize}%`
+  console.log( colorDiv.style.width," colorDiv.style.width")
   colorDiv.style.background = "green";
   colorDiv.style.height = "100%";
   cookiesStorageGreen.appendChild(colorDiv);
 }
  
+function dateSet(){
 
+}
 
 //---- vissibility functions-------
 
