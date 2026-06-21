@@ -378,14 +378,14 @@ function createcardsModel({
     dataId,
     title = "Untitled Note",
    content = "No Content",
-    date }){
+   }){
  let card =  document.createElement('div');
   card.className = "card_flex flex-box";
  card.innerHTML = `
  <div class="card_text" id = "${dataId}">
    <h1 id="card_title">${title}</h2>
     <samp id="card_content">${content}</samp></div>
-    <div id="card_date"style = "pointer-events:none">${date}</div>`
+    <div id="card_date"style = "pointer-events:none">${currentDate}</div>`
    
     return card
   }
