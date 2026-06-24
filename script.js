@@ -13,7 +13,6 @@ let coverDiv = document.querySelector(".input_cover");
 let timeView = document.querySelector(".save-time");
 let restoreDelBtn = document.querySelector("#btns");
 let searchInput = document.querySelector("#search-input");
-let searchBtn = document.querySelector("#search-btn-id");
 let trashbookmarkIcon = document.querySelector(".icon");
 let pannelHeadSection = document.querySelector(".head_section_right");
 let cookiesStorageCount = document.querySelector("#storage_count");
@@ -22,14 +21,12 @@ let wordsView = document.querySelector(".words-view");
 let rightHedSelection = document.querySelector(".head_section_right");
 
 let currentTime = null;
-let trashCard = null;
 let currentCard = null;
 let title = null;
 let content = null;
 let dataId;
-let cont = 0;
 let noteData = {};
-let allListItems = [];
+
 let currentDate = new Intl.DateTimeFormat("en-US", {
   day: "numeric",
   month: "short",
@@ -111,19 +108,17 @@ function createInputPannel() {
         placeholder = " Note Title" class="input-text"> 
         <input id="note-write-content" 
         placeholder ="  Start typing.." class="input-text">`;
-
-  timeView.textContent = currentTime
-    ? `Last saved:${currentTime}`
-    : "Last saved:never";
+ 
+   
 }
 
 //3.Create new note card---//
-async function createCards() {
+ function createCards() {
   NotVisible(nocards);
 
   dataId = Date.now();
-  let card = await createcardsModel({ dataId });
-  await noteList.append(card);
+  let card =  createcardsModel({ dataId });
+  noteList.append(card);
   currentCard = card;
 
   setActiveCard(card);
@@ -146,16 +141,7 @@ inputPannel.addEventListener("input", async (e) => {
       content = cardContent.textContent = e.target.value.trim();
     }
 
-    noteData = {
-      id: dataId,
-      t: title || "Untitled Note",
-      c: content || "No Content",
-      ts: currentTime,
-      d: 0,
-      b: 0,
-      dt: currentDate,
-    };
-
+    noteData = getNoteData(currentCard)
     if (title === "") {
       alert("enter title");
     } else cookiesSet(noteData);
@@ -187,17 +173,17 @@ async function setActiveCard(card) {
 
   add_bookmark.classList.remove("active-bookmark");
 
-  document.querySelectorAll(".card_flex").forEach((el) => {
-    el.classList.remove("card-active");
-    el.classList.add("cards-inactive");
-  });
+ document.querySelectorAll(".card_flex").forEach(el =>
+  el.classList.toggle("card-active", el === card)
+ );
+
 
   card.classList.remove("cards-inactive");
   card.classList.add("card-active");
 
   currentCard = card;
   visible(inputTextCondiner, "block");
-  noteData.id = getCardId(Card)
+  noteData.id = getCardId(card)
   let getTime = await getObject(
     currentCard.querySelector(".card_text").id,
     "ts",
@@ -205,13 +191,12 @@ async function setActiveCard(card) {
   // set the timeView/
 
   timeView.textContent = "";
-  currentTime = getTime; //  trash add time update
+ //  trash add time update
+
   // if card pass time check ------//
-  if (getTime == null) {
-    timeView.textContent = `Last saved:${currentTime}`;
-  } else {
-    timeView.textContent = `saved:${getTime}`;
-  }
+  
+  timeView.textContent = getTime ?`saved:${getTime}`: currentTime ? ` saved:${currentTime}`: `Last saved:never`
+ 
   currentCardPannelView(card); //pannel UI
 
   if (card) {
@@ -259,14 +244,13 @@ function currentCardPannelView(card) {
 
 add_trash.addEventListener("click", async () => {
   try {
-    let cardId = await getCardId(Card)
+    let cardId = await getCardId(currentCard)
     let title = await currentCard.querySelector("#card_title").textContent;
     let content = await currentCard.querySelector("#card_content").textContent;
-    noteData.id = cardId;
-    ((noteData.t = title || "Untitled Note"),
-      (noteData.c = content || "No Content"),
-      (noteData.d = 1));
-    noteData.ts = currentTime;
+   noteData = {
+  ...getNoteData(currentCard),
+  d: 1
+};
 
     await cookiesSet(noteData);
     trashList.appendChild(currentCard);
@@ -281,15 +265,34 @@ add_trash.addEventListener("click", async () => {
 });
 
 add_bookmark.addEventListener("click", async (e) => {
-  let cardId = await getCardId(Card)
-  noteData.id = cardId;
-  noteData.b = 1;
+  
+  // noteData ={... getNoteData(currentCard),
+  // b : 1}
+  // await cookiesSet(noteData);
+  // e.target.style.background = "yellow";
+  // currentCard.querySelector("#card_date").innerText = "";
+  // currentCard
+  //   .querySelector("#card_date")
+  //   .insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
+
+
+  isBookmarked = await getObject(getCardId(currentCard),"b");
+  noteData = {...getNoteData(currentCard),
+    b : isBookmarked ? 0 : 1
+  };
   await cookiesSet(noteData);
-  e.target.style.background = "yellow";
-  currentCard.querySelector("#card_date").innerText = "";
-  currentCard
-    .querySelector("#card_date")
-    .insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
+   const dateEl = currentCard.querySelector("#card_date");
+
+  if (noteData.b) {
+    e.target.style.background = "yellow";
+
+    dateEl.innerHTML =
+      '<i class="bi bi-pin"></i>';
+  } else {
+    e.target.style.background = "none";
+
+    dateEl.textContent = currentDate;
+  }
 });
 
 restoreDelBtn.addEventListener("click", async (e) => {
@@ -317,20 +320,22 @@ restoreDelBtn.addEventListener("click", async (e) => {
 searchInput.addEventListener("input", (e) => {
   const searchTerm = searchInput.value.trim().toLowerCase();
   const data = noteList.querySelectorAll(".card_text");
+  
+  let firstMatch;
+  
   data.forEach((el) => {
     const card = el.closest(".card_flex");
-    if (el.textContent.toLowerCase().includes(searchTerm.toLowerCase())) {
-      card.style.display = "";
-
-      setActiveCard(card);
-    } else {
-      card.style.display = "none";
-    }
+const found = el.textContent.toLowerCase().includes(searchTerm )
+card.style.display = found ? "":"none";
+  firstMatch ??= found ? card : null;
   });
-});
+ firstMatch && setActiveCard(firstMatch)
+
+})
 
 // ----Cookies set---//
 async function cookiesSet(notesData) {
+ 
   const existing = await cookieStore.get(notesData.id);
 
   let note = existing ? JSON.parse(atob(existing.value)) : {};
@@ -405,7 +410,7 @@ async function cookieFlags() {
 
   cookiesStorageCount.innerHTML = `${cookieSize}kb`;
   // clear old green bar
-  cookiesStorageGreen.innerHTML = "";
+  cookiesStorageGreen.replaceChildren();
 
   let colorDiv = document.createElement("div");
   colorDiv.className = "greenDiv";
@@ -414,11 +419,18 @@ async function cookieFlags() {
   cookiesStorageGreen.appendChild(colorDiv);
 }
 
-let getCardId  = card => card?.querySelector("card_text")?.id
+let getCardId  = card =>card?.querySelector(".card_text")?.id;
+
 
 function getNoteData(card){
   return{
-    
+    id:getCardId(card),
+   t: card.querySelector("#card_title").textContent || "Untitled Note",
+    c: card.querySelector("#card_content").textContent || "No Content",
+    ts: currentTime,
+    d: 0,
+    b: 0,
+    dt: currentDate
   }
 
 }
