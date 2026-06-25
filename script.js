@@ -32,7 +32,11 @@ let currentDate = new Intl.DateTimeFormat("en-US", {
   month: "short",
 }).format(Date.now());
 
-NotVisible(rightHedSelection);
+//---- vissibility functions-------
+const show = (el,d="block") => el && (el.style.display=d);
+const hide = el => el && (el.style.display="none");
+
+hide(rightHedSelection);
 
 // ---toggle btn  funs----/
 
@@ -47,13 +51,13 @@ function toggleViews(
   activeToggle.classList.add("active");
   inActiveToggle.classList.remove("active");
   inActiveToggle.classList.add("in-active");
-  visible(activeCardList, "flex");
-  NotVisible(inActiveCardList);
+  show(activeCardList, "flex");
+hide(inActiveCardList);
   if (activeCardList.firstElementChild != null) {
-    NotVisible(nocards);
-  } else visible(nocards, "block");
+  hide(nocards);
+  } else show(nocards, "block");
 }
-
+//  toggleMyTrash.classList.remove("active_trashNote_hover");
 toggleViews(toggleMyNotes, toggleMyTrash, noteList, trashList); //defualt mynotetoggle btn set
 
 // 2.Toggle events
@@ -62,28 +66,29 @@ toggleMyNotes.addEventListener("click", myNoteToggle);
 
 function myNoteToggle() {
   toggleViews(toggleMyNotes, toggleMyTrash, noteList, trashList);
-  NotVisible(coverDiv);
+hide(coverDiv);
   inputTextCondiner.classList.remove("style-ponter");
-  NotVisible(pannelHeadSection);
-  NotVisible(restoreDelBtn);
+hide(pannelHeadSection);
+hide(restoreDelBtn);
   currentCard = noteList.lastElementChild;
   currentCardPannelView(currentCard);
   if (!currentCard) {
-    visible(noInput, "flex");
-    NotVisible(inputTextCondiner);
+    show(noInput, "flex");
+  hide(inputTextCondiner);
   } else {
     setActiveCard(currentCard);
   }
 }
 getTrashNote(); //trash fun call global
+
+
 //-----Trash event-----
 toggleMyTrash.addEventListener("click", () => {
-  toggleMyTrash.style.color = "rgb(157, 6, 6);";
+
   toggleViews(toggleMyTrash, toggleMyNotes, trashList, noteList);
-  visible(coverDiv, "flex");
-  NotVisible(pannelHeadSection);
-  // "currentcard ",currentCard)
-  NotVisible(trashbookmarkIcon);
+  show(coverDiv, "flex");
+hide(pannelHeadSection);
+hide(trashbookmarkIcon);
   inputTextCondiner.classList.add("style-ponter");
 });
 
@@ -93,16 +98,16 @@ toggleMyTrash.addEventListener("click", () => {
 addNoteBtn.addEventListener("click", addNewNote);
 
 async function addNewNote() {
-  NotVisible(noInput);
+hide(noInput);
   myNoteToggle();
-  visible(pannelHeadSection, "flex");
-  visible(trashbookmarkIcon, "flex");
+  show(pannelHeadSection, "flex");
+  show(trashbookmarkIcon, "flex");
   createCards();
 }
 
 // 2.create UI pannel New-----/
 function createInputPannel() {
-  NotVisible(noInput);
+hide(noInput);
   inputTextCondiner.innerHTML = `
         <input id ="note-write-tittle" 
         placeholder = " Note Title" class="input-text"> 
@@ -114,7 +119,7 @@ function createInputPannel() {
 
 //3.Create new note card---//
  function createCards() {
-  NotVisible(nocards);
+hide(nocards);
 
   dataId = Date.now();
   let card =  createcardsModel({ dataId });
@@ -128,7 +133,7 @@ function createInputPannel() {
 //4.-----           Input pass event----//
 inputPannel.addEventListener("input", async (e) => {
   try {
-    visible(wordsView, "flex");
+    show(wordsView, "flex");
     currentTime = new Date().toLocaleTimeString();
     const cardTitle = currentCard.querySelector("#card_title");
     const cardContent = currentCard.querySelector("#card_content");
@@ -168,7 +173,7 @@ trashList.addEventListener("click", (e) => {
 });
 
 async function setActiveCard(card) {
-  NotVisible(noInput);
+hide(noInput);
   if (!card) return;
 
   add_bookmark.classList.remove("active-bookmark");
@@ -182,13 +187,12 @@ async function setActiveCard(card) {
   card.classList.add("card-active");
 
   currentCard = card;
-  visible(inputTextCondiner, "block");
+  show(inputTextCondiner, "block");
   noteData.id = getCardId(card)
   let getTime = await getObject(
     currentCard.querySelector(".card_text").id,
     "ts",
   );
-  // set the timeView/
 
   timeView.textContent = "";
  //  trash add time update
@@ -200,13 +204,13 @@ async function setActiveCard(card) {
   currentCardPannelView(card); //pannel UI
 
   if (card) {
-    visible(pannelHeadSection, "flex");
+    show(pannelHeadSection, "flex");
     if (card?.parentElement?.id == "note-cards-list") {
-      visible(trashbookmarkIcon, "flex");
-      NotVisible(restoreDelBtn);
+      show(trashbookmarkIcon, "flex");
+    hide(restoreDelBtn);
     } else {
-      visible(restoreDelBtn, "flex");
-      NotVisible(trashbookmarkIcon);
+      show(restoreDelBtn, "flex");
+    hide(trashbookmarkIcon);
     }
   }
 }
@@ -256,8 +260,8 @@ add_trash.addEventListener("click", async () => {
     trashList.appendChild(currentCard);
     if (noteList.lastChild) {
       setActiveCard(noteList.lastElementChild);
-      NotVisible(inputTextCondiner);
-      visible(noInput, "flex");
+    hide(inputTextCondiner);
+      show(noInput, "flex");
     }
   } catch (err) {
     console.log(err);
@@ -265,16 +269,6 @@ add_trash.addEventListener("click", async () => {
 });
 
 add_bookmark.addEventListener("click", async (e) => {
-  
-  // noteData ={... getNoteData(currentCard),
-  // b : 1}
-  // await cookiesSet(noteData);
-  // e.target.style.background = "yellow";
-  // currentCard.querySelector("#card_date").innerText = "";
-  // currentCard
-  //   .querySelector("#card_date")
-  //   .insertAdjacentHTML("beforeend", `<i class="bi bi-pin" width=40px></i>`);
-
 
   isBookmarked = await getObject(getCardId(currentCard),"b");
   noteData = {...getNoteData(currentCard),
@@ -434,18 +428,6 @@ function getNoteData(card){
   }
 
 }
-//---- vissibility functions-------
-// const hide = el => el && (el.style.display = "none");
 
-// const show = (el,display="block") =>
-//   el && (el.style.display = display);
-// notvisible---
-function NotVisible(element) {
-  element.style.display = "none";
-}
-//visible fun---
-function visible(element, style) {
-  if (element) {
-    element.style.display = style;
-  }
-}
+
+
